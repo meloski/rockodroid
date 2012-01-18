@@ -17,14 +17,68 @@
  */
 package com.rockodroid;
 
-import android.app.Activity;
-import android.os.Bundle;
+import com.rockodroid.view.AlbumListActivity;
+import com.rockodroid.view.ArtistaListActivity;
+import com.rockodroid.view.MediaListActivity;
+import com.rockodroid.view.PlaylistListActivity;
 
-public class HomeActivity extends Activity {
+import android.app.ActivityGroup;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.TabHost;
+
+/**
+ * Esta clase permite seleccionar la categoría por la cual buscar el
+ * contenido multimedia del dispositivo. Cada Tab lanza una actividad
+ * distinta dependiendo de la categoría, mostrando un ListView con los
+ * ítems.
+ * 
+ * @author Juan C. Orozco
+ *
+ */
+public class HomeActivity extends ActivityGroup {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.layout_home);
+        
+        TabHost mTabHost;
+        TabHost.TabSpec mSpec;
+        Intent intent;
+        Resources mResources = getResources();
+
+    	//Configuración del TabHost
+    	mTabHost = (TabHost)findViewById(R.id.tabhost);
+    	mTabHost.setup(this.getLocalActivityManager());
+
+        //Creación y configuración de cada Tab
+        try{
+        	intent = new Intent(this, ArtistaListActivity.class);
+        	mSpec = mTabHost.newTabSpec("artista").setIndicator("Artista" /*,
+        			mResources.getDrawable(R.drawable.) */).setContent(intent);
+        	mTabHost.addTab(mSpec);
+        	
+        	intent = new Intent(this, AlbumListActivity.class);
+        	mSpec = mTabHost.newTabSpec("album").setIndicator("Álbum",
+        			mResources.getDrawable(R.drawable.ic_disco)).setContent(intent);
+        	mTabHost.addTab(mSpec);
+        	
+        	intent = new Intent(this, MediaListActivity.class);
+        	mSpec = mTabHost.newTabSpec("archivos").setIndicator("Archivos" /*,
+        			mResources.getDrawable(R.drawable.) */).setContent(intent);
+        	mTabHost.addTab(mSpec);
+        	
+        	intent = new Intent(this, PlaylistListActivity.class);
+        	mSpec = mTabHost.newTabSpec("playlist").setIndicator("Playlist",
+        			mResources.getDrawable(R.drawable.ic_lista)).setContent(intent);
+        	mTabHost.addTab(mSpec);
+        	
+        	mTabHost.setCurrentTab(0);        	
+        }catch(Exception e){
+        	Log.e("CREACION TAB", e.toString());
+        }
     }
 }
