@@ -35,6 +35,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ArtistaListActivity" android:label="Artista">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".AlbumListActivity" android:label="Álbum">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".MediaListActivity" android:label="Archivos">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".PlaylistListActivity" android:label="Listas de reproducción">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+			</intent-filter>
+		</activity>
     </application>
 
 </manifest>
