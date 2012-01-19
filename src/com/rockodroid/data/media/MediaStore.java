@@ -19,6 +19,8 @@ package com.rockodroid.data.media;
 
 import java.util.ArrayList;
 
+import com.rockodroid.model.vo.Artista;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -36,8 +38,6 @@ public class MediaStore {
 	private final Context mContext;
 	private final ContentResolver resolver;
 
-	private final static String ARTISTA = android.provider.MediaStore.Audio.Media.ARTIST;
-
 	/* URIs de consulta */
 	private final static Uri uriMedia = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 	private final static Uri uriArtista = android.provider.MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
@@ -49,9 +49,9 @@ public class MediaStore {
 		resolver = mContext.getContentResolver();
 	}
 
-	public ArrayList buscarArtistas() {
-		ArrayList artistas = new ArrayList();
-
+	public ArrayList<Artista> buscarArtistas() {
+		ArrayList<Artista> artistas = new ArrayList<Artista>();
+		
 		Cursor cursor = resolver.query(uriArtista, null, null, null, null);
 		if (cursor == null) {
 			// falló la consulta
