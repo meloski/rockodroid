@@ -19,6 +19,10 @@ package com.rockodroid.data.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnErrorListener;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.os.IBinder;
 
 /**
@@ -30,7 +34,9 @@ import android.os.IBinder;
  * @author Juan C. Orozco
  *
  */
-public class MediaService extends Service {
+public class MediaService extends Service implements OnPreparedListener, OnErrorListener{
+
+	private MediaPlayer mPlayer;
 
 	/**
 	 * El sistema llama este método cuando otro componente ejecuta
@@ -41,7 +47,7 @@ public class MediaService extends Service {
 		
 		return START_NOT_STICKY;
 	}
-	
+
 	/**
 	 * El sistema llama este método cuando el servicio inicia por primera vez.
 	 * Sirve para hacer las configuraciones iniciales.
@@ -73,4 +79,52 @@ public class MediaService extends Service {
 		super.onDestroy();
 	}
 
+	/**
+	 * Se encarga de iniciarlizar el MediaPlayer y dejarlo
+	 * listo para asignar el recurso multimedia.
+	 * 
+	 */
+	private void iniciarPlayer() {
+		if (mPlayer == null) {
+			mPlayer = new MediaPlayer();
+			mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			mPlayer.setOnPreparedListener(this);
+		}else {
+			mPlayer.reset();
+		}
+	}
+
+	/**
+	 * Libera los recursos del MediaPlayer.
+	 */
+	private void liberarRecursos() {
+		if(mPlayer == null) {
+			mPlayer.release();
+			mPlayer = null;
+		}
+	}
+
+
+	/*** CALLBACKS ***/
+	
+	/**
+	 * Es llamado cuando el MediaPlayer ha codificado y preparado el
+	 * recurso media y está listo para comenzar su reproducción.
+	 */
+	public void onPrepared(MediaPlayer mp) {
+		
+	}
+
+	/**
+	 * 
+	 * @param mp - El MediaPlayer que generó el error.
+	 * @param what - Código del error generado.
+	 * @param extra - Información extra.
+	 * @return boolean - true indica que el error ha sido manejado.
+	 */
+	public boolean onError(MediaPlayer mp, int what, int extra) {
+		//El MediaPlayer está en estado de error, debería ser reseteado.
+		mPlayer.reset();
+		return false;
+	}
 }
