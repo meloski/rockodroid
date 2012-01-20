@@ -24,6 +24,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.IBinder;
+import android.os.PowerManager;
 
 /**
  * Servicio encargado de la reproducción de los archivos
@@ -88,7 +89,9 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		if (mPlayer == null) {
 			mPlayer = new MediaPlayer();
 			mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 			mPlayer.setOnPreparedListener(this);
+			mPlayer.setOnErrorListener(this);
 		}else {
 			mPlayer.reset();
 		}
