@@ -17,6 +17,10 @@
  */
 package com.rockodroid.data.service;
 
+import com.rockodroid.HomeActivity;
+import com.rockodroid.R;
+import com.rockodroid.view.notification.NotificationHelper;
+
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -37,8 +41,11 @@ import android.os.PowerManager;
  */
 public class MediaService extends Service implements OnPreparedListener, OnErrorListener{
 
+	private static final int NOTIFICATION_ID = 1;
+	
 	private MediaPlayer mPlayer;
 
+	private NotificationHelper notificationHelper;
 	/**
 	 * El sistema llama este método cuando otro componente ejecuta
 	 * startService(). El servicio corre indefinidamente.
@@ -55,10 +62,11 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 */
 	@Override
 	public void onCreate() {
+		notificationHelper = new NotificationHelper(getApplicationContext());
 		
 		super.onCreate();
 	}
-	
+
 	/**
 	 * Este método es llamado cuando otro componente ejecuta bindService().
 	 * Este método sirve para generar una comunicacion con otros componentes
@@ -69,14 +77,14 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		
 		return null;
 	}
-	
+
 	/**
 	 * El sistema llama este método cuando el servicio será destruido.
 	 * Liberar recursos!!
 	 */
 	@Override
 	public void onDestroy() {
-		
+
 		super.onDestroy();
 	}
 
@@ -98,15 +106,49 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	}
 
 	/**
-	 * Libera los recursos del MediaPlayer.
+	 * Libera los recursos del MediaPlayer según lo indicado por
+	 * el parámetro total.
+	 * 
+	 * @param total - Indica si se liberan todos los recursos.
 	 */
-	private void liberarRecursos() {
-		if(mPlayer == null) {
+	private void liberarRecursos(boolean total) {
+		stopForeground(true);
+		if(total == true && mPlayer != null) {
 			mPlayer.release();
 			mPlayer = null;
 		}
 	}
 
+	/**
+	 * Detiene o inicia el MediaPlayer alternando su estado. 
+	 */
+	private void alternarReproduccion() {
+		if(mPlayer != null) {
+			if(mPlayer.isPlaying()) {
+				liberarRecursos(false);
+				mPlayer.pause();
+			}else {
+				startForeground(NOTIFICATION_ID, notificationHelper.crearNotificacion(
+						"Rockodroid", "", "", R.drawable.ic_disco, HomeActivity.class, true));
+				mPlayer.start();
+			}
+		}
+	}
+
+	/**
+	 * Selecciona el siguiente item de la cola.
+	 */
+	private void avanzar() {
+		
+	}
+
+	/**
+	 * Selecciona el item de la cola actual que fué reproducido
+	 * anteriormente.
+	 */
+	private void retroceder() {
+		
+	}
 
 	/*** CALLBACKS ***/
 	
@@ -115,7 +157,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 * recurso media y está listo para comenzar su reproducción.
 	 */
 	public void onPrepared(MediaPlayer mp) {
-		
+		alternarReproduccion();
 	}
 
 	/**
