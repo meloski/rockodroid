@@ -22,6 +22,7 @@ import com.rockodroid.R;
 import com.rockodroid.view.notification.NotificationHelper;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -29,6 +30,7 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.text.AlteredCharSequence;
 
 /**
  * Servicio encargado de la reproducción de los archivos
@@ -39,13 +41,17 @@ import android.os.PowerManager;
  * @author Juan C. Orozco
  *
  */
-public class MediaService extends Service implements OnPreparedListener, OnErrorListener{
+public class MediaService extends Service implements OnPreparedListener, OnErrorListener,
+				AudioFocusCambiable{
 
 	private static final int NOTIFICATION_ID = 1;
+	private static final float VOL_SUAVE = 0.1f;
 	
 	private MediaPlayer mPlayer;
 
 	private NotificationHelper notificationHelper;
+	private AudioFocusHelper audioFocusHelper;
+
 	/**
 	 * El sistema llama este método cuando otro componente ejecuta
 	 * startService(). El servicio corre indefinidamente.
@@ -62,8 +68,9 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 */
 	@Override
 	public void onCreate() {
-		notificationHelper = new NotificationHelper(getApplicationContext());
-		
+		Context c = getApplicationContext();
+		notificationHelper = new NotificationHelper(c);
+		audioFocusHelper = new AudioFocusHelper(c, this);
 		super.onCreate();
 	}
 
@@ -149,6 +156,17 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	private void retroceder() {
 		
 	}
+	
+	/**
+	 * Cambia el volumen del MediaPlayer por el indicado.
+	 * Establece el mismo volumen tanto en el izq como el der.
+	 * @param vol - Valor para el volumen.
+	 */
+	private void establecerVolumen(float vol) {
+		if(mPlayer != null) {
+			mPlayer.setVolume(vol, vol);
+		}
+	}
 
 	/*** CALLBACKS ***/
 	
@@ -171,5 +189,30 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		//El MediaPlayer está en estado de error, debería ser reseteado.
 		mPlayer.reset();
 		return false;
+	}
+
+	/**
+	 * Callback llamado al ganar el foco.
+	 */
+	public void alGanarFoco() {
+
+	}
+
+	/**
+	 * Callback llamado al perder el foco indefinidamente.
+	 */
+	public void alPerderFoco() {
+		liberarRecursos(false);
+	}
+
+	/**
+	 * Callback llamado al perder el foco por poco tiempo.
+	 */
+	public void alPerderFocoMomentaneo(boolean mermar) {
+		if (mermar) {
+			establecerVolumen(VOL_SUAVE);
+		}else {
+			alternarReproduccion();
+		}
 	}
 }
