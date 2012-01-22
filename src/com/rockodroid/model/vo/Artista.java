@@ -29,7 +29,7 @@ public class Artista {
 	/* Infomación básica del artista*/
 	private final String id;
 	private final String nombre;
-	private final ArrayList<Album> discos;
+	private ArrayList<Album> discos;
 	
 	public Artista(String name, String id) {
 		this.id = id;
@@ -51,6 +51,10 @@ public class Artista {
 
 	public ArrayList<Album> getDiscos() {
 		return discos;
+	}
+	
+	public void establecerDiscos(ArrayList<Album> albums) {
+		this.discos = albums;
 	}
 	
 	public void addAlbum(Album album) {
