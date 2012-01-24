@@ -25,6 +25,11 @@ assets/
 ## Linux
 .*
 !.gitignore
+!.project
+!.classpath
+!.loadpath
+!.buildpath
+!.settings/
 *~
 
 ## KDE
