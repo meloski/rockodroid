@@ -17,14 +17,20 @@
  */
 package com.rockodroid.data.media;
 
+import java.io.FileDescriptor;
 import java.util.ArrayList;
 
+import com.rockodroid.R;
 import com.rockodroid.model.vo.Album;
 import com.rockodroid.model.vo.Artista;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 /**
@@ -93,7 +99,7 @@ public class MediaStore {
 			int art = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ART);
 			Album album;
 			do {
-				album = new Album(c.getInt(idAlbum), c.getString(tituloAlbum), null);
+				album = new Album(c.getInt(idAlbum), c.getString(tituloAlbum), mContext.getResources().getDrawable(R.drawable.ic_launcher));
 				albums.add(album);
 			}while(c.moveToNext());
 		}
