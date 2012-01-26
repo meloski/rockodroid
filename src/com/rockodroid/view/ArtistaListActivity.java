@@ -17,8 +17,26 @@
  */
 package com.rockodroid.view;
 
-import android.app.Activity;
+import com.rockodroid.data.media.MediaStore;
+import com.rockodroid.model.listadapter.ArtistaListAdapter;
 
-public class ArtistaListActivity extends Activity {
+import android.app.ExpandableListActivity;
+import android.os.Bundle;
 
+/**
+ * Esta clase muestra una lista con los artistas de los cuales hay como mínimo
+ * un trabajo musical en el dispositivo. Muestra dicha información en una lista
+ * expandible de forma que rápidamente pueda acceder a los albumes de cada artista.
+ * 
+ * @author Juan C. Orozco
+ */
+public class ArtistaListActivity extends ExpandableListActivity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		MediaStore mStore = new MediaStore(getApplicationContext());
+		setListAdapter(new ArtistaListAdapter(getApplicationContext(), mStore.buscarArtistas()));
+	}
 }
