@@ -17,7 +17,6 @@
  */
 package com.rockodroid.data.media;
 
-import java.io.FileDescriptor;
 import java.util.ArrayList;
 
 import com.rockodroid.R;
@@ -27,10 +26,6 @@ import com.rockodroid.model.vo.Artista;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 /**
@@ -70,11 +65,10 @@ public class MediaStore {
 		}else if (cursor.moveToFirst()) {
 			int nombreArtista = cursor.getColumnIndex(android.provider.MediaStore.Audio.Artists.ARTIST);
 			int idArtista = cursor.getColumnIndex(android.provider.MediaStore.Audio.Artists._ID);
-			int keyArtista = cursor.getColumnIndex(android.provider.MediaStore.Audio.Artists.ARTIST_KEY);
 			Artista artista;
 			do {
 				artista = new Artista(cursor.getString(nombreArtista), cursor.getString(idArtista));
-				artista.establecerDiscos(buscarAlbumDe(cursor.getString(keyArtista)));
+				artista.establecerDiscos(buscarAlbumDe(cursor.getString(nombreArtista)));
 				artistas.add(artista);
 			}while(cursor.moveToNext());
 		}
@@ -88,18 +82,21 @@ public class MediaStore {
 	 */
 	public ArrayList<Album> buscarAlbumDe(String keyArtista) {
 		ArrayList<Album> albums = new ArrayList<Album>();
-		
-		String artistaColumn = android.provider.MediaStore.Audio.Artists.ARTIST;
-		Cursor c = resolver.query(uriAlbum, null, artistaColumn, new String[] {keyArtista}, null);
+		String artistaColumn = android.provider.MediaStore.Audio.Albums.ARTIST;
+		Cursor c = resolver.query(uriAlbum, null, artistaColumn + "=?", new String[] {keyArtista}, null);
 		if(c == null) {
 			return null;
 		}else if(c.moveToFirst()) {
 			int tituloAlbum = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM);
-			int idAlbum = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ID);
+			int idAlbum = c.getColumnIndex(android.provider.MediaStore.Audio.Albums._ID);
 			int art = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ART);
 			Album album;
+			int albumId;
+			String albumTitulo;
 			do {
-				album = new Album(c.getInt(idAlbum), c.getString(tituloAlbum), mContext.getResources().getDrawable(R.drawable.ic_launcher));
+				albumTitulo =  c.getString(tituloAlbum);
+				albumId = Integer.parseInt(c.getString(idAlbum));
+				album = new Album(albumId, albumTitulo, mContext.getResources().getDrawable(R.drawable.ic_disco));
 				albums.add(album);
 			}while(c.moveToNext());
 		}
