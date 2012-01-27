@@ -17,8 +17,27 @@
  */
 package com.rockodroid.view;
 
-import android.app.Activity;
+import com.rockodroid.data.media.MediaStore;
+import com.rockodroid.model.listadapter.PlayListListAdapter;
 
-public class PlaylistListActivity extends Activity {
+import android.app.ListActivity;
+import android.content.Context;
+import android.os.Bundle;
 
+/**
+ * Muestra una lista con todas las listas de reproducción registradas en el sistema.
+ * @author Juan C. Orozco
+ */
+public class PlaylistListActivity extends ListActivity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		getListView().setFastScrollEnabled(true);
+		
+		Context context = getApplicationContext();
+		MediaStore mStore = new MediaStore(context);
+		setListAdapter(new PlayListListAdapter(context, mStore.buscarPlayLists()));
+	}
 }

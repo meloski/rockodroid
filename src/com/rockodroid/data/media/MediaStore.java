@@ -23,6 +23,7 @@ import com.rockodroid.R;
 import com.rockodroid.model.vo.Album;
 import com.rockodroid.model.vo.Artista;
 import com.rockodroid.model.vo.Audio;
+import com.rockodroid.model.vo.PlayList;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -170,5 +171,23 @@ public class MediaStore {
 			}while(cursor.moveToNext());
 		}
 		return audios;
+	}
+
+	/**
+	 * @return ArrayList<PlayList> - Colección de todas las playlists guardadas. 
+	 */
+	public ArrayList<PlayList> buscarPlayLists() {
+		ArrayList<PlayList> lists = new ArrayList<PlayList>();
+		Cursor cursor = resolver.query(uriPlaylist, null, null, null, null);
+		if(cursor == null) {
+			return null;
+		}else if(cursor.moveToFirst()) {
+			int playListIdColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Playlists._ID);
+			int playListNameColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Playlists.NAME);
+			do {
+				lists.add(new PlayList(cursor.getInt(playListIdColumn),cursor.getString(playListNameColumn)));
+			}while(cursor.moveToNext());
+		}
+		return lists;
 	}
 }
