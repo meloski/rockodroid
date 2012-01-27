@@ -17,8 +17,29 @@
  */
 package com.rockodroid.view;
 
-import android.app.Activity;
+import com.rockodroid.data.media.MediaStore;
+import com.rockodroid.model.listadapter.AudioListAdapter;
 
-public class MediaListActivity extends Activity {
+import android.app.ListActivity;
+import android.content.Context;
+import android.os.Bundle;
 
+/**
+ * Muestra una lista de items que representan los archivos de audio
+ * almacenados en el dispositivo.
+ * 
+ * @author Juan C. Orozco
+ */
+public class AudioListActivity extends ListActivity{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		getListView().setFastScrollEnabled(true);
+		
+		Context context = getApplicationContext();
+		MediaStore mStore = new MediaStore(context);
+		setListAdapter(new AudioListAdapter(context, mStore.buscarAudio()));
+	}
 }
