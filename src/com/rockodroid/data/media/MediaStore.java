@@ -80,23 +80,25 @@ public class MediaStore {
 	 * @param keyArtista - Artist_key del content provider.
 	 * @return ArrayList que contiene los albumes del artista indentificado con jeyArtista.
 	 */
-	public ArrayList<Album> buscarAlbumDe(String keyArtista) {
+	public ArrayList<Album> buscarAlbumDe(String idArtista) {
 		ArrayList<Album> albums = new ArrayList<Album>();
 		String artistaColumn = android.provider.MediaStore.Audio.Albums.ARTIST;
-		Cursor c = resolver.query(uriAlbum, null, artistaColumn + "=?", new String[] {keyArtista}, null);
+		Cursor c = resolver.query(uriAlbum, null, artistaColumn + "=?", new String[] {idArtista}, null);
 		if(c == null) {
 			return null;
 		}else if(c.moveToFirst()) {
 			int tituloAlbum = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM);
 			int idAlbum = c.getColumnIndex(android.provider.MediaStore.Audio.Albums._ID);
+			int nSongs = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.NUMBER_OF_SONGS); 
 			int art = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ART);
 			Album album;
-			int albumId;
+			int albumId, numCanciones;
 			String albumTitulo;
 			do {
 				albumTitulo =  c.getString(tituloAlbum);
 				albumId = Integer.parseInt(c.getString(idAlbum));
-				album = new Album(albumId, albumTitulo, mContext.getResources().getDrawable(R.drawable.ic_disco));
+				numCanciones = c.getInt(nSongs);
+				album = new Album(albumId, albumTitulo, numCanciones, mContext.getResources().getDrawable(R.drawable.ic_disco));
 				albums.add(album);
 			}while(c.moveToNext());
 		}

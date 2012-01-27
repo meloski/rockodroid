@@ -30,10 +30,12 @@ public class Album {
 	private final int id;
 	private final String titulo;
 	private final Drawable albumArt;
+	private final int nCanciones;
 	
-	public Album(int id, String titulo, Drawable art) {
+	public Album(int id, String titulo, int nSongs, Drawable art) {
 		this.id = id;
 		this.titulo = titulo;
+		this.nCanciones = nSongs;
 		this.albumArt = art;
 	}
 	
@@ -43,6 +45,10 @@ public class Album {
 
 	public String getTitulo() {
 		return titulo;
+	}
+	
+	public int getNCanciones() {
+		return nCanciones;
 	}
 
 	public Drawable getAlbumArt() {
