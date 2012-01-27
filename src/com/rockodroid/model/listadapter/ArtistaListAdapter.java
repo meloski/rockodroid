@@ -94,6 +94,7 @@ public class ArtistaListAdapter extends BaseExpandableListAdapter {
 			convertView = inflador.inflate(layoutAlbumArtista, null);
 			holder.tituloAlbum = (TextView) convertView.findViewById(R.id.album_title);
 			holder.artAlbum = (ImageView) convertView.findViewById(R.id.album_art);
+			holder.numCanciones = (TextView) convertView.findViewById(R.id.album_n_canciones);
 			convertView.setPadding(12, 0, 0, 0);
 			convertView.setTag(holder);
 		}else {
@@ -101,6 +102,9 @@ public class ArtistaListAdapter extends BaseExpandableListAdapter {
 		}
 		Album album = artistas.get(groupPosition).getDiscos().get(childPosition);
 		holder.tituloAlbum.setText(album.getTitulo());
+		int num = album.getNCanciones();
+		holder.numCanciones.setText(String.valueOf(num) + ((num > 1)? " canciones":" canción"));
+
 		holder.artAlbum.setImageDrawable(album.getAlbumArt());
 		return convertView;
 	}
@@ -168,5 +172,6 @@ public class ArtistaListAdapter extends BaseExpandableListAdapter {
 	static class ViewHolderAlbum {
 		ImageView artAlbum;
 		TextView tituloAlbum;
+		TextView numCanciones;
 	}
 }

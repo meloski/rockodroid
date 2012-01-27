@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
+<!--
     Rockodroid: Music Player for android
     Copyright (C) 2012  Laura K. Salazar, Roberto R. De la Parra, Juan C. Orozco.
 
@@ -15,21 +15,32 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeArtistLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:layout_height="match_parent" >
 
     <ImageView
         android:id="@+id/album_art"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/album_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/album_art"
+        android:layout_alignParentTop="true"
         android:text="TextView" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/album_n_canciones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/album_art"
+        android:layout_below="@id/album_title" />
+
+</RelativeLayout>
