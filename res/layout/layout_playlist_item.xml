@@ -21,27 +21,12 @@
     android:layout_height="match_parent" >
 
     <TextView
-        android:id="@+id/audio_titulo"
+        android:id="@+id/playlist_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/audio_artista"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/audio_titulo"
-        android:layout_toLeftOf="@+id/audio_duracion" />
-
-    <TextView
-        android:id="@id/audio_duracion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/audio_titulo" />
 
 </RelativeLayout>
