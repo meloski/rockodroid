@@ -46,7 +46,7 @@
 				<action android:name="android.intent.action.VIEW" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".view.MediaListActivity" android:label="Archivos">
+		<activity android:name=".view.AudioListActivity" android:label="Archivos">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 			</intent-filter>
