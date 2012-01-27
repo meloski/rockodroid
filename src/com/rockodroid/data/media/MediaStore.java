@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import com.rockodroid.R;
 import com.rockodroid.model.vo.Album;
 import com.rockodroid.model.vo.Artista;
+import com.rockodroid.model.vo.Audio;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -96,7 +97,7 @@ public class MediaStore {
 			String albumTitulo;
 			do {
 				albumTitulo =  c.getString(tituloAlbum);
-				albumId = Integer.parseInt(c.getString(idAlbum));
+				albumId = c.getInt(idAlbum);
 				numCanciones = c.getInt(nSongs);
 				album = new Album(albumId, albumTitulo, numCanciones, mContext.getResources().getDrawable(R.drawable.ic_disco));
 				albums.add(album);
@@ -125,12 +126,49 @@ public class MediaStore {
 			String albumTitulo;
 			do {
 				albumTitulo =  c.getString(tituloColumn);
-				albumId = Integer.parseInt(c.getString(idAlbumColumn));
+				albumId = c.getInt(idAlbumColumn);
 				numCanciones = c.getInt(numSongsColumn);
 				album = new Album(albumId, albumTitulo, numCanciones, mContext.getResources().getDrawable(R.drawable.ic_disco));
 				albums.add(album);
 			}while(c.moveToNext());
 		}
 		return albums;
+	}
+
+	/**
+	 * Buscar y retorna todos los items de audio encontrados en el dispositivo.
+	 * @return ArrayList<Audio> - Colleccion de instancias Audio
+	 */
+	public ArrayList<Audio> buscarAudio() {
+		ArrayList<Audio> audios = new ArrayList<Audio>();
+		Cursor cursor = resolver.query(uriMedia, null, null, null, null);
+		if(cursor == null) {
+			return null;
+		}else if(cursor.moveToFirst())  {
+			int audioIdColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
+			int audioTituloColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
+			int audioSizeColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.SIZE);
+			int audioLengColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
+			int audioTrackColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TRACK);
+			int audioYearColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.YEAR);
+			int audioArtistColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
+
+			Audio audio;
+			int audioId, audioTrack, audioYear;
+			long audioSize, audioLength;
+			String audioTitle, audioArtist;
+			do {
+				audioId = cursor.getInt(audioIdColumn);
+				audioTitle = cursor.getString(audioTituloColumn);
+				audioSize = cursor.getLong(audioSizeColumn);
+				audioLength = cursor.getLong(audioLengColumn);
+				audioTrack = cursor.getInt(audioTrackColumn);
+				audioYear = cursor.getInt(audioYearColumn);
+				audioArtist = cursor.getString(audioArtistColumn);
+				audio = new Audio(audioId, audioTitle, audioSize, audioLength, audioTrack, audioYear, audioArtist);
+				audios.add(audio);
+			}while(cursor.moveToNext());
+		}
+		return audios;
 	}
 }
