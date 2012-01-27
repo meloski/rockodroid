@@ -19,7 +19,7 @@ package com.rockodroid;
 
 import com.rockodroid.view.AlbumListActivity;
 import com.rockodroid.view.ArtistaListActivity;
-import com.rockodroid.view.MediaListActivity;
+import com.rockodroid.view.AudioListActivity;
 import com.rockodroid.view.PlaylistListActivity;
 
 import android.app.ActivityGroup;
@@ -66,7 +66,7 @@ public class HomeActivity extends ActivityGroup {
         			mResources.getDrawable(R.drawable.ic_disco)).setContent(intent);
         	mTabHost.addTab(mSpec);
         	
-        	intent = new Intent(this, MediaListActivity.class);
+        	intent = new Intent(this, AudioListActivity.class);
         	mSpec = mTabHost.newTabSpec("archivos").setIndicator("Archivos" /*,
         			mResources.getDrawable(R.drawable.) */).setContent(intent);
         	mTabHost.addTab(mSpec);
