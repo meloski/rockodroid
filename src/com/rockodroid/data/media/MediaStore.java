@@ -104,4 +104,33 @@ public class MediaStore {
 		}
 		return albums;
 	}
+	
+	/**
+	 * Busca por medio del provider del sistema todos los albums de los cuales
+	 * se tenga como mínimo una canción en el dispositivo.
+	 * @return ArrayList<Album> - Colleccion de todos lo albums encontrados.
+	 */
+	public ArrayList<Album> buscarAlbums() {
+		ArrayList<Album> albums = new ArrayList<Album>();
+		Cursor c = resolver.query(uriAlbum, null, null, null, android.provider.MediaStore.Audio.Albums.ALBUM);
+		if(c == null) {
+			return null;
+		}else if(c.moveToFirst()) {
+			int tituloColumn = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM);
+			int idAlbumColumn = c.getColumnIndex(android.provider.MediaStore.Audio.Albums._ID);
+			int numSongsColumn = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.NUMBER_OF_SONGS); 
+			int artColumn = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ART);
+			Album album;
+			int albumId, numCanciones;
+			String albumTitulo;
+			do {
+				albumTitulo =  c.getString(tituloColumn);
+				albumId = Integer.parseInt(c.getString(idAlbumColumn));
+				numCanciones = c.getInt(numSongsColumn);
+				album = new Album(albumId, albumTitulo, numCanciones, mContext.getResources().getDrawable(R.drawable.ic_disco));
+				albums.add(album);
+			}while(c.moveToNext());
+		}
+		return albums;
+	}
 }

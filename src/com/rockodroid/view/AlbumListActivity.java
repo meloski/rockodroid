@@ -17,8 +17,25 @@
  */
 package com.rockodroid.view;
 
-import android.app.Activity;
+import com.rockodroid.data.media.MediaStore;
+import com.rockodroid.model.listadapter.AlbumListAdapter;
 
-public class AlbumListActivity extends Activity {
+import android.app.ListActivity;
+import android.os.Bundle;
 
+/**
+ * 
+ * @author Juan C. Orozco
+ */
+public class AlbumListActivity extends ListActivity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		MediaStore mStore = new MediaStore(getApplicationContext());
+		setListAdapter(new AlbumListAdapter(getApplicationContext(), mStore.buscarAlbums()));
+		
+		getListView().setFastScrollEnabled(true);
+	}
 }
