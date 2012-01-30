@@ -57,8 +57,8 @@ public class HomeActivity extends ActivityGroup {
         //Creación y configuración de cada Tab
         try{
         	intent = new Intent(this, ArtistaListActivity.class);
-        	mSpec = mTabHost.newTabSpec("artista").setIndicator("Artista" /*,
-        			mResources.getDrawable(R.drawable.) */).setContent(intent);
+        	mSpec = mTabHost.newTabSpec("artista").setIndicator("Artista",
+        			mResources.getDrawable(R.drawable.ic_artista)).setContent(intent);
         	mTabHost.addTab(mSpec);
         	
         	intent = new Intent(this, AlbumListActivity.class);
@@ -67,8 +67,8 @@ public class HomeActivity extends ActivityGroup {
         	mTabHost.addTab(mSpec);
         	
         	intent = new Intent(this, AudioListActivity.class);
-        	mSpec = mTabHost.newTabSpec("archivos").setIndicator("Archivos" /*,
-        			mResources.getDrawable(R.drawable.) */).setContent(intent);
+        	mSpec = mTabHost.newTabSpec("archivos").setIndicator("Archivos",
+        			mResources.getDrawable(R.drawable.ic_musica)).setContent(intent);
         	mTabHost.addTab(mSpec);
         	
         	intent = new Intent(this, PlaylistListActivity.class);
