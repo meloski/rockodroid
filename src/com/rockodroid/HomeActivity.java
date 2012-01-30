@@ -58,22 +58,22 @@ public class HomeActivity extends ActivityGroup {
         try{
         	intent = new Intent(this, ArtistaListActivity.class);
         	mSpec = mTabHost.newTabSpec("artista").setIndicator("Artista",
-        			mResources.getDrawable(R.drawable.ic_artista)).setContent(intent);
+        			mResources.getDrawable(R.drawable.ic_tab_artista)).setContent(intent);
         	mTabHost.addTab(mSpec);
         	
         	intent = new Intent(this, AlbumListActivity.class);
         	mSpec = mTabHost.newTabSpec("album").setIndicator("Álbum",
-        			mResources.getDrawable(R.drawable.ic_disco)).setContent(intent);
+        			mResources.getDrawable(R.drawable.ic_tab_disco)).setContent(intent);
         	mTabHost.addTab(mSpec);
         	
         	intent = new Intent(this, AudioListActivity.class);
         	mSpec = mTabHost.newTabSpec("archivos").setIndicator("Archivos",
-        			mResources.getDrawable(R.drawable.ic_musica)).setContent(intent);
+        			mResources.getDrawable(R.drawable.ic_tab_nota)).setContent(intent);
         	mTabHost.addTab(mSpec);
         	
         	intent = new Intent(this, PlaylistListActivity.class);
         	mSpec = mTabHost.newTabSpec("playlist").setIndicator("Playlist",
-        			mResources.getDrawable(R.drawable.ic_lista)).setContent(intent);
+        			mResources.getDrawable(R.drawable.ic_tab_lista)).setContent(intent);
         	mTabHost.addTab(mSpec);
         	
         	mTabHost.setCurrentTab(0);        	
