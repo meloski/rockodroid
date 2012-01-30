@@ -20,111 +20,120 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <SeekBar
-        android:id="@+id/seekBar1"
+    <ImageView
+         android:id="@+id/mp_control_play"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:src="@drawable/ic_media_play"
+         android:clickable="true"
+         android:layout_alignParentBottom="true"
+         android:layout_centerHorizontal="true" />
+    
+	<ImageView
+         android:id="@+id/mp_control_atras"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:src="@drawable/ic_media_backward"
+         android:clickable="true"
+         android:layout_alignParentBottom="true"
+    	 android:layout_toLeftOf="@+id/mp_control_play" />
+
+	<ImageView
+         android:id="@+id/mp_control_adelante"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:src="@drawable/ic_media_forward"
+         android:clickable="true"
+         android:layout_alignParentBottom="true"
+         android:layout_toRightOf="@+id/mp_control_play" />
+
+	<ImageView
+         android:id="@+id/mp_cola"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:src="@drawable/ic_queue"
+         android:clickable="true"
+         android:layout_alignParentBottom="true"
+         android:layout_alignParentRight="true" />
+    
+	<SeekBar
+        android:id="@+id/mp_posicion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="161dp" />
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/mp_control_play"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout1"
+	<LinearLayout
+        android:id="@+id/mp_layout_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
-
-        <ImageButton
-            android:id="@+id/imageButton1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_media_backward" />
-
-        <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="48dp"
-            android:layout_marginLeft="55dp"
-            android:src="@drawable/ic_media_play" />
-
-        <ImageButton
-            android:id="@+id/imageButton3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_media_forward" />
-
-        <ImageButton
-            android:id="@+id/imageButton4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_queue" />
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/frameLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/linearLayout2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/imageButton5" >
-
-    </FrameLayout>
-
-    <ImageButton
-        android:id="@+id/imageButton5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="42dp"
-        android:src="@drawable/ic_mp_repeat_off" />
-
-    <ImageButton
-        android:id="@+id/imageButton6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/imageButton5"
-        android:src="@drawable/ic_mp_shuffle_off" />
-
-    <ImageButton
-        android:id="@+id/imageButton7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/imageButton6" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/seekBar1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_above="@+id/mp_posicion"
+        android:layout_marginTop="10dp">
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/mp_info_audio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Large Text"
+            android:text="Título audio"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/mp_info_artista"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Artista" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/mp_info_album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Álbum" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/mp_modo_repeticion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/mp_layout_info"
+        android:src="@drawable/ic_mp_repeat_off"
+        android:clickable="true" />
+
+    <ImageView
+        android:id="@+id/mp_modo_seleccion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/mp_modo_repeticion"
+        android:layout_above="@+id/mp_layout_info"
+        android:src="@drawable/ic_mp_shuffle_off"
+        android:clickable="true" />
+
+    <ImageView
+        android:id="@+id/mp_puntuacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/mp_modo_seleccion"
+        android:layout_alignTop="@+id/mp_modo_seleccion"
+        android:layout_above="@+id/mp_layout_info"
+        android:src="@drawable/ic_estrella"
+        android:clickable="true" />
+
+	<FrameLayout
+        android:id="@+id/mp_caratula"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/mp_modo_repeticion" >
+
+    </FrameLayout>
 
 </RelativeLayout>
