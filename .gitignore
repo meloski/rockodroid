@@ -15,7 +15,7 @@
 *.ap_
 *.dex
 local.properties
-project.properties
+#project.properties
 
 ## Generados
 bin/
