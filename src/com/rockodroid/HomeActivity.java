@@ -20,13 +20,18 @@ package com.rockodroid;
 import com.rockodroid.view.AlbumListActivity;
 import com.rockodroid.view.ArtistaListActivity;
 import com.rockodroid.view.AudioListActivity;
+import com.rockodroid.view.PlayerActivity;
 import com.rockodroid.view.PlaylistListActivity;
+import com.rockodroid.view.pref.PreferenciasActivity;
 
 import android.app.ActivityGroup;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TabHost;
 
 /**
@@ -80,5 +85,35 @@ public class HomeActivity extends ActivityGroup {
         }catch(Exception e){
         	Log.e("CREACION TAB", e.toString());
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	MenuInflater inflador = getMenuInflater();
+    	inflador.inflate(R.menu.menu_home, menu);
+    	return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch(item.getItemId()) {
+    	case R.id.menu_home_play_all:
+    		
+    		return true;
+    	case R.id.menu_home_shuffle_all:
+    		
+    		return true;
+    	case R.id.menu_home_buscar:
+    		
+    		return true;
+    	case R.id.menu_home_player:
+    		startActivity(new Intent(getApplicationContext(), PlayerActivity.class));
+    		return true;
+    	case R.id.menu_home_conf:
+    		startActivity(new Intent(getApplicationContext(), PreferenciasActivity.class));
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
     }
 }
