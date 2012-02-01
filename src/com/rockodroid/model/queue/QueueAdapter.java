@@ -17,6 +17,8 @@
  */
 package com.rockodroid.model.queue;
 
+import com.rockodroid.R;
+import com.rockodroid.model.vo.Audio;
 import com.rockodroid.model.vo.MediaItem;
 
 import android.content.Context;
@@ -33,7 +35,7 @@ import android.widget.TextView;
  */
 public class QueueAdapter extends ArrayAdapter<MediaItem> {
 
-	private static final int LAYOUT_QUEUE = 0;
+	private static final int LAYOUT_QUEUE = R.layout.layout_queue_item;
 
 	private final LayoutInflater inflador;
 
@@ -60,8 +62,25 @@ public class QueueAdapter extends ArrayAdapter<MediaItem> {
 		ViewHolder holder;
 		if(convertView == null) {
 			holder = new ViewHolder();
+			convertView = inflador.inflate(LAYOUT_QUEUE, null);
+			holder.qPosicion = (TextView) convertView.findViewById(R.id.q_numero);
+			holder.qTitulo = (TextView) convertView.findViewById(R.id.q_titulo);
+			holder.qArtista = (TextView) convertView.findViewById(R.id.q_artista);
+			holder.qDuracion = (TextView) convertView.findViewById(R.id.q_duracion);
+			convertView.setTag(holder);
 		}else {
 			holder = (ViewHolder) convertView.getTag();
+		}
+		MediaItem item = getItem(position);
+		holder.qPosicion.setText(String.valueOf(position));
+		holder.qTitulo.setText(item.getTitulo());
+		if(item instanceof Audio) {
+			Audio audio = (Audio) item;
+			holder.qArtista.setText(audio.getArtista());
+			long length = audio.getDuracion() / 1000;
+			int min = (int)(length / 60), seg = (int)(length % 60);
+			holder.qDuracion.setText(String.valueOf(min) + ":" + 
+					((seg < 10)?"0":"") + String.valueOf(seg));
 		}
 		return convertView;
 	}
