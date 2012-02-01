@@ -122,7 +122,7 @@
         android:layout_toRightOf="@+id/mp_modo_seleccion"
         android:layout_alignTop="@+id/mp_modo_seleccion"
         android:layout_above="@+id/mp_layout_info"
-        android:src="@drawable/ic_estrella"
+        android:src="@drawable/ic_estrella_off"
         android:clickable="true" />
 
 	<FrameLayout
