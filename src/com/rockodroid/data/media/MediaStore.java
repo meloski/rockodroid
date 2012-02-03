@@ -47,7 +47,31 @@ public class MediaStore {
 	private final static Uri uriArtista = android.provider.MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
 	private final static Uri uriAlbum = android.provider.MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
 	private final static Uri uriPlaylist = android.provider.MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
-
+	
+	/*Strings*/
+	// Artista 
+	public final static String ARTIST_ID = android.provider.MediaStore.Audio.Artists._ID;
+	public final static String ARTIST = android.provider.MediaStore.Audio.Artists.ARTIST;
+	// album
+	public final static String ALBUM = android.provider.MediaStore.Audio.Albums.ALBUM;
+	public final static String ALBUM_ID =android.provider.MediaStore.Audio.Albums._ID;
+    public final static String ALBUM_NUMBER_OF_SONGS = android.provider.MediaStore.Audio.Albums.NUMBER_OF_SONGS;
+    public final static String ALBUM_ART = android.provider.MediaStore.Audio.Albums.ALBUM_ART;
+    public final static String ALBUM_ARTISTA = android.provider.MediaStore.Audio.Albums.ARTIST;
+    //Media
+    public final static String MEDIA_ID = android.provider.MediaStore.Audio.Media._ID;
+    public final static String MEDIA_TITLE= android.provider.MediaStore.Audio.Media.TITLE;
+    public final static String MEDIA_SIZE= android.provider.MediaStore.Audio.Media.SIZE;
+    public final static String MEDIA_DURATION= android.provider.MediaStore.Audio.Media.DURATION;
+    public final static String MEDIA_TRACK= android.provider.MediaStore.Audio.Media.TRACK;
+    public final static String MEDIA_YEAR= android.provider.MediaStore.Audio.Media.YEAR;
+    public final static String MEDIA_ARTIST= android.provider.MediaStore.Audio.Media.ARTIST;
+    public final static String MEDIA_ALBUM= android.provider.MediaStore.Audio.Media.ALBUM;
+    public final static String MEDIA_ALBUM_ID = android.provider.MediaStore.Audio.Media.ALBUM_ID;
+    //Playlist
+    public final static String PLAYLIST_ID = android.provider.MediaStore.Audio.Playlists._ID;
+    public final static String PLAYLIST_NAME = android.provider.MediaStore.Audio.Playlists.NAME;
+    
 	public MediaStore(Context c) {
 		this.mContext = c;
 		resolver = mContext.getContentResolver();
@@ -59,14 +83,14 @@ public class MediaStore {
 	 */
 	public ArrayList<Artista> buscarArtistas() {
 		ArrayList<Artista> artistas = new ArrayList<Artista>();
-		
-		Cursor cursor = resolver.query(uriArtista, null, null, null, null);
+		String []proyeccion = {ARTIST,ARTIST_ID};		
+		Cursor cursor = resolver.query(uriArtista, proyeccion, null, null, null);
 		if (cursor == null) {
 			// falló la consulta
 			return null;
 		}else if (cursor.moveToFirst()) {
-			int nombreArtista = cursor.getColumnIndex(android.provider.MediaStore.Audio.Artists.ARTIST);
-			int idArtista = cursor.getColumnIndex(android.provider.MediaStore.Audio.Artists._ID);
+			int nombreArtista = cursor.getColumnIndex(ARTIST);
+			int idArtista = cursor.getColumnIndex(ARTIST_ID);
 			Artista artista;
 			do {
 				artista = new Artista(cursor.getString(nombreArtista), cursor.getString(idArtista));
@@ -84,15 +108,16 @@ public class MediaStore {
 	 */
 	public ArrayList<Album> buscarAlbumDe(String idArtista) {
 		ArrayList<Album> albums = new ArrayList<Album>();
-		String artistaColumn = android.provider.MediaStore.Audio.Albums.ARTIST;
-		Cursor c = resolver.query(uriAlbum, null, artistaColumn + "=?", new String[] {idArtista}, null);
+		String []proyeccion ={ALBUM,ALBUM_ID,ALBUM_NUMBER_OF_SONGS,ALBUM_ART};
+		String artistaColumn = ALBUM_ARTISTA;
+		Cursor c = resolver.query(uriAlbum, proyeccion, artistaColumn + "=?", new String[] {idArtista}, null);
 		if(c == null) {
 			return null;
 		}else if(c.moveToFirst()) {
-			int tituloAlbum = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM);
-			int idAlbum = c.getColumnIndex(android.provider.MediaStore.Audio.Albums._ID);
-			int nSongs = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.NUMBER_OF_SONGS); 
-			int art = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ART);
+			int tituloAlbum = c.getColumnIndex(ALBUM);
+			int idAlbum = c.getColumnIndex(ALBUM_ID);
+			int nSongs = c.getColumnIndex(ALBUM_NUMBER_OF_SONGS); 
+			int art = c.getColumnIndex(ALBUM_ART);
 			Album album;
 			int albumId, numCanciones;
 			String albumTitulo;
@@ -114,14 +139,15 @@ public class MediaStore {
 	 */
 	public ArrayList<Album> buscarAlbums() {
 		ArrayList<Album> albums = new ArrayList<Album>();
-		Cursor c = resolver.query(uriAlbum, null, null, null, android.provider.MediaStore.Audio.Albums.ALBUM);
+		String []proyeccion ={ALBUM,ALBUM_ID,ALBUM_NUMBER_OF_SONGS,ALBUM_ART};
+		Cursor c = resolver.query(uriAlbum, proyeccion, null, null, ALBUM);
 		if(c == null) {
 			return null;
 		}else if(c.moveToFirst()) {
-			int tituloColumn = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM);
-			int idAlbumColumn = c.getColumnIndex(android.provider.MediaStore.Audio.Albums._ID);
-			int numSongsColumn = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.NUMBER_OF_SONGS); 
-			int artColumn = c.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ART);
+			int tituloColumn = c.getColumnIndex(ALBUM);
+			int idAlbumColumn = c.getColumnIndex(ALBUM_ID);
+			int numSongsColumn = c.getColumnIndex(ALBUM_NUMBER_OF_SONGS); 
+			int artColumn = c.getColumnIndex(ALBUM_ART);
 			Album album;
 			int albumId, numCanciones;
 			String albumTitulo;
@@ -142,18 +168,19 @@ public class MediaStore {
 	 */
 	public ArrayList<Audio> buscarAudio() {
 		ArrayList<Audio> audios = new ArrayList<Audio>();
-		Cursor cursor = resolver.query(uriMedia, null, null, null, null);
+		String []proyeccion = {MEDIA_ID,MEDIA_TITLE,MEDIA_SIZE,MEDIA_DURATION,MEDIA_TRACK,MEDIA_YEAR,MEDIA_ARTIST,MEDIA_ALBUM};
+		Cursor cursor = resolver.query(uriMedia, proyeccion, null, null, null);
 		if(cursor == null) {
 			return null;
 		}else if(cursor.moveToFirst())  {
-			int audioIdColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-			int audioTituloColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
-			int audioSizeColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.SIZE);
-			int audioLengColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
-			int audioTrackColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TRACK);
-			int audioYearColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.YEAR);
-			int audioArtistColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
-			int audioAlbumColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM);
+			int audioIdColumn = cursor.getColumnIndex(MEDIA_ID);
+			int audioTituloColumn = cursor.getColumnIndex(MEDIA_TITLE);
+			int audioSizeColumn = cursor.getColumnIndex(MEDIA_SIZE);
+			int audioLengColumn = cursor.getColumnIndex(MEDIA_DURATION);
+			int audioTrackColumn = cursor.getColumnIndex(MEDIA_TRACK);
+			int audioYearColumn = cursor.getColumnIndex(MEDIA_YEAR);
+			int audioArtistColumn = cursor.getColumnIndex(MEDIA_ARTIST);
+			int audioAlbumColumn = cursor.getColumnIndex(MEDIA_ALBUM);
 			Audio audio;
 			int audioId, audioTrack, audioYear;
 			long audioSize, audioLength;
@@ -180,12 +207,13 @@ public class MediaStore {
 	 */
 	public ArrayList<PlayList> buscarPlayLists() {
 		ArrayList<PlayList> lists = new ArrayList<PlayList>();
-		Cursor cursor = resolver.query(uriPlaylist, null, null, null, null);
+		String []proyeccion = {PLAYLIST_ID,PLAYLIST_NAME};
+		Cursor cursor = resolver.query(uriPlaylist, proyeccion, null, null, null);
 		if(cursor == null) {
 			return null;
 		}else if(cursor.moveToFirst()) {
-			int playListIdColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Playlists._ID);
-			int playListNameColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Playlists.NAME);
+			int playListIdColumn = cursor.getColumnIndex(PLAYLIST_ID);
+			int playListNameColumn = cursor.getColumnIndex(PLAYLIST_NAME);
 			do {
 				lists.add(new PlayList(cursor.getInt(playListIdColumn),cursor.getString(playListNameColumn)));
 			}while(cursor.moveToNext());
@@ -199,19 +227,20 @@ public class MediaStore {
 	 */
 	public ArrayList<Audio> buscarAudioEn(String albumId) {
 		ArrayList<Audio> audios = new ArrayList<Audio>();
-		String albumIdColumn = android.provider.MediaStore.Audio.Media.ALBUM_ID;
-		Cursor cursor = resolver.query(uriMedia, null, albumIdColumn + "=?", new String[] {albumId}, null);
+		String albumIdColumn = MEDIA_ALBUM_ID;
+		String []proyeccion = {MEDIA_ID,MEDIA_TITLE,MEDIA_SIZE,MEDIA_DURATION,MEDIA_TRACK,MEDIA_YEAR,MEDIA_ARTIST,MEDIA_ALBUM};
+		Cursor cursor = resolver.query(uriMedia, proyeccion, albumIdColumn + "=?", new String[] {albumId}, null);
 		if(cursor == null) {
 			return null;
 		}else if(cursor.moveToFirst())  {
-			int audioIdColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-			int audioTituloColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
-			int audioSizeColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.SIZE);
-			int audioLengColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
-			int audioTrackColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TRACK);
-			int audioYearColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.YEAR);
-			int audioArtistColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
-			int audioAlbumColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM);
+			int audioIdColumn = cursor.getColumnIndex(MEDIA_ID);
+			int audioTituloColumn = cursor.getColumnIndex(MEDIA_TITLE);
+			int audioSizeColumn = cursor.getColumnIndex(MEDIA_SIZE);
+			int audioLengColumn = cursor.getColumnIndex(MEDIA_DURATION);
+			int audioTrackColumn = cursor.getColumnIndex(MEDIA_TRACK);
+			int audioYearColumn = cursor.getColumnIndex(MEDIA_YEAR);
+			int audioArtistColumn = cursor.getColumnIndex(MEDIA_ARTIST);
+			int audioAlbumColumn = cursor.getColumnIndex(MEDIA_ALBUM);
 			Audio audio;
 			int audioId, audioTrack, audioYear;
 			long audioSize, audioLength;
