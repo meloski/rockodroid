@@ -20,14 +20,17 @@ package com.rockodroid.view;
 import com.rockodroid.R;
 import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.listadapter.AlbumListAdapter;
+import com.rockodroid.model.queue.Queue;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
  * 
@@ -35,12 +38,19 @@ import android.view.ContextMenu.ContextMenuInfo;
  */
 public class AlbumListActivity extends ListActivity {
 
+	private static Context context;
+	private static Queue cola;
+	private static AlbumListAdapter adapter;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		context = getApplicationContext();
+		cola = Queue.getCola();
+
 		MediaStore mStore = new MediaStore(getApplicationContext());
-		setListAdapter(new AlbumListAdapter(getApplicationContext(), mStore.buscarAlbums()));
+		adapter = new AlbumListAdapter(getApplicationContext(), mStore.buscarAlbums());
+		setListAdapter(adapter);
 		
 		getListView().setFastScrollEnabled(true);
 		registerForContextMenu(getListView());
@@ -55,8 +65,10 @@ public class AlbumListActivity extends ListActivity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		case R.id.menu_context_enqueue:
+			//Album album = adapter.getItem(info.position);
 			
 			return true;
 		case R.id.menu_context_play:

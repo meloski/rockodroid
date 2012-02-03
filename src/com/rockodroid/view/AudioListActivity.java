@@ -20,6 +20,8 @@ package com.rockodroid.view;
 import com.rockodroid.R;
 import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.listadapter.AudioListAdapter;
+import com.rockodroid.model.queue.Queue;
+import com.rockodroid.model.vo.Audio;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -29,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
  * Muestra una lista de items que representan los archivos de audio
@@ -38,15 +41,19 @@ import android.view.ContextMenu.ContextMenuInfo;
  */
 public class AudioListActivity extends ListActivity{
 
+	private static AudioListAdapter adapter;
+	private static Queue cola;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		cola = Queue.getCola();
 		getListView().setFastScrollEnabled(true);
-		
 		Context context = getApplicationContext();
+
 		MediaStore mStore = new MediaStore(context);
-		setListAdapter(new AudioListAdapter(context, mStore.buscarAudio()));
+		adapter = new AudioListAdapter(context, mStore.buscarAudio());
+		setListAdapter(adapter);
 
 		registerForContextMenu(getListView());
 	}
@@ -60,9 +67,11 @@ public class AudioListActivity extends ListActivity{
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		case R.id.menu_context_enqueue:
-			
+			Audio audio = adapter.getItem(info.position);
+			cola.agregar(audio);
 			return true;
 		case R.id.menu_context_play:
 			

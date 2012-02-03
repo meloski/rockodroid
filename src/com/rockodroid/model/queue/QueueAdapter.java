@@ -72,7 +72,7 @@ public class QueueAdapter extends ArrayAdapter<MediaItem> {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		MediaItem item = getItem(position);
-		holder.qPosicion.setText(String.valueOf(position));
+		holder.qPosicion.setText(String.valueOf(position + 1) + ". ");
 		holder.qTitulo.setText(item.getTitulo());
 		if(item instanceof Audio) {
 			Audio audio = (Audio) item;

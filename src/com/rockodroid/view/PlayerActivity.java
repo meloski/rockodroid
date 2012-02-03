@@ -18,6 +18,10 @@
 package com.rockodroid.view;
 
 import com.rockodroid.R;
+import com.rockodroid.model.queue.Queue;
+import com.rockodroid.model.vo.Album;
+import com.rockodroid.model.vo.Audio;
+import com.rockodroid.model.vo.MediaItem;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,6 +30,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * Actividad encargada de mostrar la interfaz del reproductor.
@@ -34,21 +39,48 @@ import android.widget.ImageView;
 public class PlayerActivity extends Activity {
 
 	private static Context context;
-	private static ImageView tvQueue;
-	
+	private static Queue queue;
+	/* Elementos de la interfaz */
+	private static ImageView ivQueue;
+	private static TextView tvArtista; 
+	private static TextView tvTitulo;
+	private static TextView tvAlbum;
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_player);
-		
+
 		context = getApplicationContext();
-		
-		tvQueue = (ImageView) findViewById(R.id.mp_cola);
-		tvQueue.setOnClickListener(new OnClickListener() {
+		queue = Queue.getCola();
+		ivQueue = (ImageView) findViewById(R.id.mp_cola);
+		ivQueue.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				PlayerActivity.this.startActivity(new Intent(PlayerActivity.context , QueueActivity.class));
 			}
 		});
+
+		tvTitulo = (TextView) findViewById(R.id.mp_info_audio);
+		tvArtista = (TextView) findViewById(R.id.mp_info_artista);
+		tvAlbum = (TextView) findViewById(R.id.mp_info_album);
+
+		actualizarInterfazInfo();
+	}
+
+	private void actualizarInterfazInfo() {
+		MediaItem currentMedia = queue.getActual();
+		if(currentMedia != null) {
+			tvTitulo.setText(currentMedia.getTitulo());
+			if(currentMedia instanceof Audio) {
+				tvAlbum.setText(" ");
+				tvArtista.setText(((Audio)currentMedia).getArtista());
+			}
+		}else {
+			tvTitulo.setText(" ");
+			tvArtista.setText(" ");
+			tvAlbum.setText(" ");
+		}
 	}
 }

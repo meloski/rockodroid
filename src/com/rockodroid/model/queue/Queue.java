@@ -85,6 +85,7 @@ public class Queue {
 	 */
 	public void agregar(MediaItem media) {
 		elementos.add(media);
+		if(current == -1) current = 0;
 		configurarModoEleccion(null);
 	}
 
@@ -94,6 +95,7 @@ public class Queue {
 	 */
 	public void agregar(List<MediaItem> media) {
 		for(MediaItem m: media) elementos.add(m);
+		if(current == -1) current = 0;
 		configurarModoEleccion(null);
 	}
 
@@ -125,7 +127,7 @@ public class Queue {
 	 */
 	public void limpiar() {
 		elementos.clear();
-		current = 0;
+		current = -1;
 		configurarModoEleccion(null);
 	}
 
@@ -163,6 +165,16 @@ public class Queue {
 		}else {
 			mEleccion = modo;
 		}
+	}
+
+	/**
+	 * Obtiene el elemento que actualmente se está reproduciendo.
+	 * @return MediaItem - elemento actualmente seleccionado.
+	 */
+	public MediaItem getActual() {
+		if (current != -1)
+			return elementos.get(current);
+		return null;
 	}
 
 	/* Accesores */
