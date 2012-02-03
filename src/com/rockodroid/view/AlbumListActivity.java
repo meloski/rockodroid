@@ -17,10 +17,14 @@
  */
 package com.rockodroid.view;
 
+import java.util.ArrayList;
+
 import com.rockodroid.R;
 import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.listadapter.AlbumListAdapter;
 import com.rockodroid.model.queue.Queue;
+import com.rockodroid.model.vo.Album;
+import com.rockodroid.model.vo.Audio;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -41,6 +45,7 @@ public class AlbumListActivity extends ListActivity {
 	private static Context context;
 	private static Queue cola;
 	private static AlbumListAdapter adapter;
+	private static MediaStore mStore;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +53,7 @@ public class AlbumListActivity extends ListActivity {
 		context = getApplicationContext();
 		cola = Queue.getCola();
 
-		MediaStore mStore = new MediaStore(getApplicationContext());
+		mStore = new MediaStore(getApplicationContext());
 		adapter = new AlbumListAdapter(getApplicationContext(), mStore.buscarAlbums());
 		setListAdapter(adapter);
 		
@@ -68,8 +73,8 @@ public class AlbumListActivity extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		case R.id.menu_context_enqueue:
-			//Album album = adapter.getItem(info.position);
-			
+			Album album = adapter.getItem(info.position);
+			for(Audio a: mStore.buscarAudioEn(String.valueOf(album.getId()))) cola.agregar(a);
 			return true;
 		case R.id.menu_context_play:
 			

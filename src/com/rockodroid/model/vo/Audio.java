@@ -30,13 +30,15 @@ public class Audio extends MediaItem {
 	private final int nPista;
 	private final int anio;
 	private final String artista;
+	private final String album;
 	
-	public Audio(int iden, String title, long size, long lon, int track, int year, String artist) {
+	public Audio(int iden, String title, long size, long lon, int track, int year, String artist, String disc) {
 		super(iden, title, size, TipoMedia.Audio);
 		duracion = lon;
 		nPista = track;
 		anio = year;
 		artista = artist;
+		album = disc;
 	}
 
 	public long getDuracion() {
@@ -53,6 +55,10 @@ public class Audio extends MediaItem {
 
 	public String getArtista() {
 		return artista;
+	}
+
+	public String getAlbum() {
+		return album;
 	}
 
 }
