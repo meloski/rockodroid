@@ -17,11 +17,17 @@
  */
 package com.rockodroid.view;
 
+import com.rockodroid.R;
 import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.listadapter.ArtistaListAdapter;
 
 import android.app.ExpandableListActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 
 /**
  * Esta clase muestra una lista con los artistas de los cuales hay como mínimo
@@ -36,7 +42,31 @@ public class ArtistaListActivity extends ExpandableListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		getExpandableListView().setFastScrollEnabled(true);
 		MediaStore mStore = new MediaStore(getApplicationContext());
 		setListAdapter(new ArtistaListAdapter(getApplicationContext(), mStore.buscarArtistas()));
+		
+		registerForContextMenu(getExpandableListView());
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflador = getMenuInflater();
+		inflador.inflate(R.menu.menu_contextual_item, menu);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case R.id.menu_context_enqueue:
+			
+			return true;
+		case R.id.menu_context_play:
+			
+			return true;
+			default:
+				return super.onContextItemSelected(item);
+		}
 	}
 }

@@ -17,11 +17,17 @@
  */
 package com.rockodroid.view;
 
+import com.rockodroid.R;
 import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.listadapter.AlbumListAdapter;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 
 /**
  * 
@@ -37,5 +43,27 @@ public class AlbumListActivity extends ListActivity {
 		setListAdapter(new AlbumListAdapter(getApplicationContext(), mStore.buscarAlbums()));
 		
 		getListView().setFastScrollEnabled(true);
+		registerForContextMenu(getListView());
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflador = getMenuInflater();
+		inflador.inflate(R.menu.menu_contextual_item, menu);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case R.id.menu_context_enqueue:
+			
+			return true;
+		case R.id.menu_context_play:
+			
+			return true;
+			default:
+				return super.onContextItemSelected(item);
+		}
 	}
 }
