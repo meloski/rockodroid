@@ -97,9 +97,6 @@ public class HomeActivity extends ActivityGroup {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch(item.getItemId()) {
-    	case R.id.menu_home_play_all:
-    		
-    		return true;
     	case R.id.menu_home_shuffle_all:
     		
     		return true;

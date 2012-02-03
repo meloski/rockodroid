@@ -23,11 +23,11 @@
             android:key="detenerAudiPref"
             android:title="Detener al desconectar"
             android:summary="Detiene la reproducción al desconectar los audífonos"/>
-
+<!--
         <CheckBoxPreference 
             android:key="mostrarDashPref"
             android:title="Mostrar pantalla inicial" 
             android:summary="Muestra la pantalla de bienvenida con las opciones de la aplicación"/>
-
+ -->
     </PreferenceCategory>
 </PreferenceScreen>
