@@ -74,7 +74,7 @@ public class PlayerActivity extends Activity {
 		if(currentMedia != null) {
 			tvTitulo.setText(currentMedia.getTitulo());
 			if(currentMedia instanceof Audio) {
-				tvAlbum.setText(" ");
+				tvAlbum.setText(((Audio)currentMedia).getAlbum());
 				tvArtista.setText(((Audio)currentMedia).getArtista());
 			}
 		}else {

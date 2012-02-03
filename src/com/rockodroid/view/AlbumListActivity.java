@@ -28,6 +28,7 @@ import com.rockodroid.model.vo.Audio;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -78,6 +79,9 @@ public class AlbumListActivity extends ListActivity {
 			return true;
 		case R.id.menu_context_play:
 			
+			return true;
+		case R.id.menu_context_ver_cola:
+			startActivity(new Intent(context, QueueActivity.class));
 			return true;
 			default:
 				return super.onContextItemSelected(item);

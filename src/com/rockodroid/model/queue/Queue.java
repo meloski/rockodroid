@@ -54,7 +54,7 @@ public class Queue {
 	private Queue() {
 		elementos = new ArrayList<MediaItem>();
 		mRepet = ModoRepeticion.NORMAL;
-		current = 0;
+		current = -1;
 		configurarModoEleccion(new ModoNormal(elementos.size(), current));
 	}
 

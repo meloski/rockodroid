@@ -22,6 +22,7 @@ import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.listadapter.ArtistaListAdapter;
 
 import android.app.ExpandableListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -64,6 +65,9 @@ public class ArtistaListActivity extends ExpandableListActivity {
 			return true;
 		case R.id.menu_context_play:
 			
+			return true;
+		case R.id.menu_context_ver_cola:
+			startActivity(new Intent(getApplicationContext(), QueueActivity.class));
 			return true;
 			default:
 				return super.onContextItemSelected(item);
