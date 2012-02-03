@@ -20,7 +20,12 @@ package com.rockodroid.view;
 import com.rockodroid.R;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
 
 /**
  * Actividad encargada de mostrar la interfaz del reproductor.
@@ -28,9 +33,22 @@ import android.os.Bundle;
  */
 public class PlayerActivity extends Activity {
 
+	private static Context context;
+	private static ImageView tvQueue;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_player);
+		
+		context = getApplicationContext();
+		
+		tvQueue = (ImageView) findViewById(R.id.mp_cola);
+		tvQueue.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				PlayerActivity.this.startActivity(new Intent(PlayerActivity.context , QueueActivity.class));
+			}
+		});
 	}
 }
