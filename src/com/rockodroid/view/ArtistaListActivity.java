@@ -20,8 +20,13 @@ package com.rockodroid.view;
 import com.rockodroid.R;
 import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.listadapter.ArtistaListAdapter;
+import com.rockodroid.model.queue.Queue;
+import com.rockodroid.model.vo.Album;
+import com.rockodroid.model.vo.Artista;
+import com.rockodroid.model.vo.Audio;
 
 import android.app.ExpandableListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -29,6 +34,8 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
 /**
  * Esta clase muestra una lista con los artistas de los cuales hay como mínimo
@@ -39,14 +46,21 @@ import android.view.View;
  */
 public class ArtistaListActivity extends ExpandableListActivity {
 
+	private static Context context;
+	private static Queue cola;
+	private static MediaStore mStore;
+	private static ArtistaListAdapter adapter;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		context = getApplicationContext();
+		cola = Queue.getCola();		
 		getExpandableListView().setFastScrollEnabled(true);
-		MediaStore mStore = new MediaStore(getApplicationContext());
-		setListAdapter(new ArtistaListAdapter(getApplicationContext(), mStore.buscarArtistas()));
-		
+		mStore = new MediaStore(getApplicationContext());
+		adapter = new ArtistaListAdapter(getApplicationContext(), mStore.buscarArtistas());
+		setListAdapter(adapter);
+
 		registerForContextMenu(getExpandableListView());
 	}
 
@@ -59,15 +73,28 @@ public class ArtistaListActivity extends ExpandableListActivity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
+		ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		case R.id.menu_context_enqueue:
-			
+			int position;
+			if(ExpandableListView.getPackedPositionType(info.packedPosition) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+				position = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+				Artista artista = (Artista) adapter.getGroup(position);
+				for(Album d: artista.getDiscos())
+					for(Audio a: mStore.buscarAudioEn(String.valueOf(d.getId())))
+						cola.agregar(a);
+			}else {
+				int parentPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+				position = ExpandableListView.getPackedPositionChild(info.packedPosition);
+				Album album = (Album) adapter.getChild(parentPosition, position);
+				for(Audio a: mStore.buscarAudioEn(String.valueOf(album.getId()))) cola.agregar(a);
+			}
 			return true;
 		case R.id.menu_context_play:
 			
 			return true;
 		case R.id.menu_context_ver_cola:
-			startActivity(new Intent(getApplicationContext(), QueueActivity.class));
+			startActivity(new Intent(context, QueueActivity.class));
 			return true;
 			default:
 				return super.onContextItemSelected(item);
