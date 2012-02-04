@@ -21,6 +21,8 @@ import com.rockodroid.R;
 import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.listadapter.PlayListListAdapter;
 import com.rockodroid.model.queue.Queue;
+import com.rockodroid.model.vo.Audio;
+import com.rockodroid.model.vo.PlayList;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -74,7 +76,8 @@ public class PlaylistListActivity extends ListActivity {
 		switch(item.getItemId()) {
 		case R.id.menu_context_play:
 			cola.limpiar();
-
+			PlayList pl = adapter.getItem(info.position);
+			for(Audio a: mStore.buscarAudioDePlayList(String.valueOf(pl.getId()))) cola.agregar(a);
 			return true;
 		case R.id.menu_context_rename:
 			

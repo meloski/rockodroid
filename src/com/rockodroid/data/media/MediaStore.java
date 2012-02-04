@@ -35,7 +35,7 @@ import android.net.Uri;
  * multimedia que se encuentran en el dispositivo.
  * 
  * @author Juan C. Orozco
- *
+ * @author Roberto R. De La Parra
  */
 public class MediaStore {
 
@@ -71,6 +71,9 @@ public class MediaStore {
     //Playlist
     public final static String PLAYLIST_ID = android.provider.MediaStore.Audio.Playlists._ID;
     public final static String PLAYLIST_NAME = android.provider.MediaStore.Audio.Playlists.NAME;
+    // PlayList Members
+    public final static String MEMBERS_PLAYLIST_ID = android.provider.MediaStore.Audio.Playlists.Members.PLAYLIST_ID;
+    public final static String MEMBERS_PLAYLIST_ORDER = android.provider.MediaStore.Audio.Playlists.Members.PLAY_ORDER;
     
 	public MediaStore(Context c) {
 		this.mContext = c;
@@ -117,7 +120,7 @@ public class MediaStore {
 			int tituloAlbum = c.getColumnIndex(ALBUM);
 			int idAlbum = c.getColumnIndex(ALBUM_ID);
 			int nSongs = c.getColumnIndex(ALBUM_NUMBER_OF_SONGS); 
-			int art = c.getColumnIndex(ALBUM_ART);
+			//int art = c.getColumnIndex(ALBUM_ART);
 			Album album;
 			int albumId, numCanciones;
 			String albumTitulo;
@@ -147,7 +150,7 @@ public class MediaStore {
 			int tituloColumn = c.getColumnIndex(ALBUM);
 			int idAlbumColumn = c.getColumnIndex(ALBUM_ID);
 			int numSongsColumn = c.getColumnIndex(ALBUM_NUMBER_OF_SONGS); 
-			int artColumn = c.getColumnIndex(ALBUM_ART);
+			//int artColumn = c.getColumnIndex(ALBUM_ART);
 			Album album;
 			int albumId, numCanciones;
 			String albumTitulo;
@@ -259,6 +262,48 @@ public class MediaStore {
 				audios.add(audio);
 			}while(cursor.moveToNext());
 		}
+		return audios;
+	}
+
+	/**
+	 * Buscar y retorna los elementos de una lista de reproducción específica.
+	 * @return ArrayList<Audio> - Collección de Audio de la lista indicada.
+	 */
+	public ArrayList<Audio> buscarAudioDePlayList(String playId) {
+		ArrayList<Audio> audios = new ArrayList<Audio>();
+		Uri uri = android.provider.MediaStore.Audio.Playlists.Members.getContentUri("external", Long.parseLong(playId));
+		String [] proyeccion = {MEDIA_ID,MEDIA_TITLE,MEDIA_SIZE,MEDIA_DURATION,MEDIA_TRACK,MEDIA_YEAR,MEDIA_ARTIST,MEDIA_ALBUM};
+		Cursor cursor = resolver.query(uri, proyeccion, null ,null , MEMBERS_PLAYLIST_ORDER);
+		if(cursor == null) {
+			return null;
+		}else if(cursor.moveToFirst())  {
+			int audioIdColumn = cursor.getColumnIndex(MEDIA_ID);
+			int audioTituloColumn = cursor.getColumnIndex(MEDIA_TITLE);
+			int audioSizeColumn = cursor.getColumnIndex(MEDIA_SIZE);
+			int audioLengColumn = cursor.getColumnIndex(MEDIA_DURATION);
+			int audioTrackColumn = cursor.getColumnIndex(MEDIA_TRACK);
+			int audioYearColumn = cursor.getColumnIndex(MEDIA_YEAR);
+			int audioArtistColumn = cursor.getColumnIndex(MEDIA_ARTIST);
+			int audioAlbumColumn = cursor.getColumnIndex(MEDIA_ALBUM);
+			Audio audio;
+			int audioId, audioTrack, audioYear;
+			long audioSize, audioLength;
+			String audioTitle, audioArtist, audioAlbum;
+			do {
+				audioId = cursor.getInt(audioIdColumn);
+				audioTitle = cursor.getString(audioTituloColumn);
+				audioSize = cursor.getLong(audioSizeColumn);
+				audioLength = cursor.getLong(audioLengColumn);
+				audioTrack = cursor.getInt(audioTrackColumn);
+				audioYear = cursor.getInt(audioYearColumn);
+				audioArtist = cursor.getString(audioArtistColumn);
+				audioAlbum = cursor.getString(audioAlbumColumn);
+				audio = new Audio(audioId, audioTitle, audioSize, audioLength, audioTrack,
+						audioYear, audioArtist, audioAlbum);
+				audios.add(audio);
+			}while(cursor.moveToNext());
+		}
+		cursor.close();
 		return audios;
 	}
 }
