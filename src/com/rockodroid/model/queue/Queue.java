@@ -177,6 +177,14 @@ public class Queue {
 		return null;
 	}
 
+	/**
+	 * Establece el elemento que se reproducirá.
+	 * @param actual - posición actual en la lista.
+	 */
+	public void setActual(int actual) {
+		
+	}
+
 	/* Accesores */
 
 	public List<MediaItem> getElementos() {

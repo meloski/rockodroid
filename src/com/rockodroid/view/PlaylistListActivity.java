@@ -20,6 +20,7 @@ package com.rockodroid.view;
 import com.rockodroid.R;
 import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.listadapter.PlayListListAdapter;
+import com.rockodroid.model.queue.Queue;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -30,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
  * Muestra una lista con todas las listas de reproducción registradas en el sistema.
@@ -37,15 +39,21 @@ import android.view.ContextMenu.ContextMenuInfo;
  */
 public class PlaylistListActivity extends ListActivity {
 
+	private static Context context;
+	private static Queue cola;
+	private static MediaStore mStore;
+	private static PlayListListAdapter adapter;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		context = getApplicationContext();
+		cola = Queue.getCola();
 		getListView().setFastScrollEnabled(true);
 		
-		Context context = getApplicationContext();
-		MediaStore mStore = new MediaStore(context);
-		setListAdapter(new PlayListListAdapter(context, mStore.buscarPlayLists()));
+		mStore = new MediaStore(context);
+		adapter = new PlayListListAdapter(context, mStore.buscarPlayLists());
+		setListAdapter(adapter);
 
 		registerForContextMenu(getListView());
 	}
@@ -56,16 +64,17 @@ public class PlaylistListActivity extends ListActivity {
 		MenuInflater inflador = getMenuInflater();
 		inflador.inflate(R.menu.menu_contextual_item, menu);
 		menu.setGroupVisible(R.id.menu_group_playlist, true);
+		MenuItem agregar = menu.findItem(R.id.menu_context_enqueue);
+		agregar.setVisible(false);
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
-		case R.id.menu_context_enqueue:
-			
-			return true;
 		case R.id.menu_context_play:
-			
+			cola.limpiar();
+
 			return true;
 		case R.id.menu_context_rename:
 			
@@ -74,7 +83,7 @@ public class PlaylistListActivity extends ListActivity {
 			
 			return true;
 		case R.id.menu_context_ver_cola:
-			startActivity(new Intent(getApplicationContext(), QueueActivity.class));
+			startActivity(new Intent(context, QueueActivity.class));
 			return true;
 			default:
 				return super.onContextItemSelected(item);
