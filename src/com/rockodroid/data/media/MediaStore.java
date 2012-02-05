@@ -97,7 +97,7 @@ public class MediaStore {
 			Artista artista;
 			do {
 				artista = new Artista(cursor.getString(nombreArtista), cursor.getString(idArtista));
-				artista.establecerDiscos(buscarAlbumDe(cursor.getString(nombreArtista)));
+				artista.establecerDiscos(buscarAlbumDe(cursor.getString(idArtista)));
 				artistas.add(artista);
 			}while(cursor.moveToNext());
 		}
@@ -111,9 +111,9 @@ public class MediaStore {
 	 */
 	public ArrayList<Album> buscarAlbumDe(String idArtista) {
 		ArrayList<Album> albums = new ArrayList<Album>();
+		Uri uri = android.provider.MediaStore.Audio.Artists.Albums.getContentUri("external",Long.parseLong(idArtista));
 		String []proyeccion ={ALBUM,ALBUM_ID,ALBUM_NUMBER_OF_SONGS,ALBUM_ART};
-		String artistaColumn = ALBUM_ARTISTA;
-		Cursor c = resolver.query(uriAlbum, proyeccion, artistaColumn + "=?", new String[] {idArtista}, null);
+		Cursor c = resolver.query(uri, proyeccion, null, null, null);
 		if(c == null) {
 			return null;
 		}else if(c.moveToFirst()) {
@@ -134,7 +134,7 @@ public class MediaStore {
 		}
 		return albums;
 	}
-	
+
 	/**
 	 * Busca por medio del provider del sistema todos los albums de los cuales
 	 * se tenga como mínimo una canción en el dispositivo.
