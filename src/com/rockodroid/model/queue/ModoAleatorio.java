@@ -39,14 +39,14 @@ public class ModoAleatorio implements ModoEleccion {
 		elementos = new ArrayList<Integer>(cantidad);
 		this.actual = actual;
 
-		crearIndiceAleatorio();
+		crearIndiceAleatorio(cantidad);
 	}
 
 	/**
 	 * Crea el índice con la capacidad indicada en forma aleatoria.
 	 */
-	private void crearIndiceAleatorio() {
-		for(int i = 0; i < elementos.size(); i++) elementos.add(new Integer(i));
+	private void crearIndiceAleatorio(int cantidad) {
+		for(int i = 0; i < cantidad; i++) elementos.add(new Integer(i));
 		desordenar();
 	}
 
@@ -56,7 +56,8 @@ public class ModoAleatorio implements ModoEleccion {
 	 */
 	private void desordenar() {
 		Random rnd = new Random(System.currentTimeMillis());
-		Integer elementoAux, current = elementos.get(actual);
+		Integer elementoAux;
+		int current = elementos.get(actual);
 		int indexAux, size = elementos.size();
 		for (int i = 0; i < size; i++) {
 			indexAux = rnd.nextInt(size);

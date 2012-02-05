@@ -55,7 +55,7 @@ public class Queue {
 		elementos = new ArrayList<MediaItem>();
 		mRepet = ModoRepeticion.NORMAL;
 		current = -1;
-		configurarModoEleccion(new ModoNormal(elementos.size(), current));
+		configurarModoEleccion(new ModoNormal(elementos.size(), current)); //mEleccion = new ModoNormal(elementos.size(), current);
 	}
 
 	/* Métodos singletón */
@@ -156,7 +156,7 @@ public class Queue {
 	 * @param modo - Indica el modo de elección a establecer, null para establecer el mismo.
 	 */
 	private void configurarModoEleccion(ModoEleccion modo) {
-		if(mEleccion == null) {
+		if(modo == null) {
 			if(mEleccion instanceof ModoNormal) {
 				mEleccion = new ModoNormal(elementos.size(), current);
 			}else if(mEleccion instanceof ModoAleatorio) {
@@ -203,8 +203,15 @@ public class Queue {
 		return mEleccion;
 	}
 
-	public void setModoEleccion(ModoEleccion mEleccion) {
-		this.mEleccion = mEleccion;
+	/**
+	 * Indica si la cola se establece de forma aleatoria o normal.
+	 * @param aleatorio - indica si se establece de forma aleatoria.  
+	 */
+	public void setAleatorio(boolean aleatorio) {
+		if(aleatorio)
+			this.mEleccion = new ModoAleatorio(elementos.size(), current);
+		else
+			this.mEleccion = new ModoNormal(elementos.size(), current);
 	}
 
 }
