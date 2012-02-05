@@ -33,6 +33,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
@@ -91,5 +92,16 @@ public class PlaylistListActivity extends ListActivity {
 			default:
 				return super.onContextItemSelected(item);
 		}
+	}
+
+	/* Lanza una actividad indicando el id de la lista para ver los items que contiene */
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		PlayList pl = (PlayList) getListAdapter().getItem(position);
+		Intent i = new Intent(this, ItemExploradorActivity.class);
+		i.putExtra("tipoID", ItemExploradorActivity.PLAYLIST_ITEMS);
+		i.putExtra("id", String.valueOf(pl.getId()));
+		startActivity(i);
 	}
 }

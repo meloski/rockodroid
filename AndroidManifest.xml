@@ -48,7 +48,7 @@
 				<action android:name="android.intent.action.VIEW" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".view.AudioListActivity" android:label="Archivos">
+		<activity android:name=".view.AudioListActivity" android:label="Items de Audio">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 			</intent-filter>
@@ -69,6 +69,11 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".view.QueueActivity" android:label="Cola de reproducción">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".view.ItemExploradorActivity" android:label="Elementos de audio">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 			</intent-filter>

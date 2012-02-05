@@ -43,19 +43,17 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 public class AudioListActivity extends ListActivity{
 
 	private static Context context;
-	private static AudioListAdapter adapter;
 	private static Queue cola;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		cola = Queue.getCola();
-		getListView().setFastScrollEnabled(true);
 		context = getApplicationContext();
-
 		MediaStore mStore = new MediaStore(context);
-		adapter = new AudioListAdapter(context, mStore.buscarAudio());
-		setListAdapter(adapter);
+		getListView().setFastScrollEnabled(true);
+
+		setListAdapter(new AudioListAdapter(context, mStore.buscarAudio()));
 
 		registerForContextMenu(getListView());
 	}
@@ -72,11 +70,11 @@ public class AudioListActivity extends ListActivity{
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		case R.id.menu_context_enqueue:
-			Audio audio = adapter.getItem(info.position);
+			Audio audio = (Audio)getListAdapter().getItem(info.position);
 			cola.agregar(audio);
 			return true;
 		case R.id.menu_context_play:
-			
+
 			return true;
 		case R.id.menu_context_ver_cola:
 			startActivity(new Intent(context, QueueActivity.class));

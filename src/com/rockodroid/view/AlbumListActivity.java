@@ -17,8 +17,6 @@
  */
 package com.rockodroid.view;
 
-import java.util.ArrayList;
-
 import com.rockodroid.R;
 import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.listadapter.AlbumListAdapter;
@@ -35,10 +33,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
- * 
+ * Presenta la vista para la lista total de albums encontrados 
+ * en el almacenamiento primario "external"
+ * @see AlbumListAdapter
  * @author Juan C. Orozco
  */
 public class AlbumListActivity extends ListActivity {
@@ -86,5 +87,16 @@ public class AlbumListActivity extends ListActivity {
 			default:
 				return super.onContextItemSelected(item);
 		}
+	}
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		//Se obtiene el item seleccionado
+		Album album = (Album) getListAdapter().getItem(position);
+		Intent i = new Intent(this, ItemExploradorActivity.class);
+		i.putExtra("tipoID", ItemExploradorActivity.ALBUM_ITEMS);
+		i.putExtra("id", String.valueOf(album.getId()));
+		startActivity(i);
 	}
 }

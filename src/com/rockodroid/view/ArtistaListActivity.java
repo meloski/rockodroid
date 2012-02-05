@@ -100,4 +100,16 @@ public class ArtistaListActivity extends ExpandableListActivity {
 				return super.onContextItemSelected(item);
 		}
 	}
+
+	@Override
+	public boolean onChildClick(ExpandableListView parent, View v,
+			int groupPosition, int childPosition, long id) {
+		
+		Album album = (Album) getExpandableListAdapter().getChild(groupPosition, childPosition);
+		Intent i = new Intent(this, ItemExploradorActivity.class);
+		i.putExtra("tipoID", ItemExploradorActivity.ALBUM_ITEMS);
+		i.putExtra("id", String.valueOf(album.getId()));
+		startActivity(i);
+		return true;
+	}
 }
