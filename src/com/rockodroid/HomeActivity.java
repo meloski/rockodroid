@@ -17,10 +17,7 @@
  */
 package com.rockodroid;
 
-import java.util.ArrayList;
-
 import com.rockodroid.data.media.MediaStore;
-import com.rockodroid.model.queue.ModoAleatorio;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.vo.MediaItem;
 import com.rockodroid.view.AlbumListActivity;
