@@ -42,21 +42,18 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  */
 public class PlaylistListActivity extends ListActivity {
 
-	private static Context context;
 	private static Queue cola;
 	private static MediaStore mStore;
-	private static PlayListListAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context = getApplicationContext();
+		Context context = getApplicationContext();
 		cola = Queue.getCola();
-		getListView().setFastScrollEnabled(true);
-		
 		mStore = new MediaStore(context);
-		adapter = new PlayListListAdapter(context, mStore.buscarPlayLists());
-		setListAdapter(adapter);
+		getListView().setFastScrollEnabled(true);
+
+		setListAdapter(new PlayListListAdapter(context, mStore.buscarPlayLists()));
 
 		registerForContextMenu(getListView());
 	}
@@ -77,7 +74,7 @@ public class PlaylistListActivity extends ListActivity {
 		switch(item.getItemId()) {
 		case R.id.menu_context_play:
 			cola.limpiar();
-			PlayList pl = adapter.getItem(info.position);
+			PlayList pl = (PlayList)getListAdapter().getItem(info.position);
 			for(Audio a: mStore.buscarAudioDePlayList(String.valueOf(pl.getId()))) cola.agregar(a);
 			return true;
 		case R.id.menu_context_rename:
@@ -87,7 +84,7 @@ public class PlaylistListActivity extends ListActivity {
 			
 			return true;
 		case R.id.menu_context_ver_cola:
-			startActivity(new Intent(context, QueueActivity.class));
+			startActivity(new Intent(this, QueueActivity.class));
 			return true;
 			default:
 				return super.onContextItemSelected(item);

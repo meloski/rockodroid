@@ -46,20 +46,17 @@ import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
  */
 public class ArtistaListActivity extends ExpandableListActivity {
 
-	private static Context context;
 	private static Queue cola;
 	private static MediaStore mStore;
-	private static ArtistaListAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context = getApplicationContext();
+		Context context = getApplicationContext();
+		mStore = new MediaStore(context);
 		cola = Queue.getCola();		
 		getExpandableListView().setFastScrollEnabled(true);
-		mStore = new MediaStore(getApplicationContext());
-		adapter = new ArtistaListAdapter(getApplicationContext(), mStore.buscarArtistas());
-		setListAdapter(adapter);
+		setListAdapter(new ArtistaListAdapter(context, mStore.buscarArtistas()));
 
 		registerForContextMenu(getExpandableListView());
 	}
@@ -73,28 +70,14 @@ public class ArtistaListActivity extends ExpandableListActivity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
-		case R.id.menu_context_enqueue:
-			int position;
-			if(ExpandableListView.getPackedPositionType(info.packedPosition) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-				position = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-				Artista artista = (Artista) adapter.getGroup(position);
-				for(Album d: artista.getDiscos())
-					for(Audio a: mStore.buscarAudioEn(String.valueOf(d.getId())))
-						cola.agregar(a);
-			}else {
-				int parentPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-				position = ExpandableListView.getPackedPositionChild(info.packedPosition);
-				Album album = (Album) adapter.getChild(parentPosition, position);
-				for(Audio a: mStore.buscarAudioEn(String.valueOf(album.getId()))) cola.agregar(a);
-			}
-			return true;
 		case R.id.menu_context_play:
-			
+			cola.limpiar();
+		case R.id.menu_context_enqueue:
+			agregarACola(item);
 			return true;
 		case R.id.menu_context_ver_cola:
-			startActivity(new Intent(context, QueueActivity.class));
+			startActivity(new Intent(this, QueueActivity.class));
 			return true;
 			default:
 				return super.onContextItemSelected(item);
@@ -111,5 +94,22 @@ public class ArtistaListActivity extends ExpandableListActivity {
 		i.putExtra("id", String.valueOf(album.getId()));
 		startActivity(i);
 		return true;
+	}
+
+	private void agregarACola(MenuItem item) {
+		ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
+		int position, parentPosition;
+		if(ExpandableListView.getPackedPositionType(info.packedPosition) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+			position = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+			Artista artista = (Artista) getExpandableListAdapter().getGroup(position);
+			for(Album d: artista.getDiscos())
+				for(Audio a: mStore.buscarAudioEn(String.valueOf(d.getId())))
+					cola.agregar(a);
+		}else {
+			parentPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+			position = ExpandableListView.getPackedPositionChild(info.packedPosition);
+			Album album = (Album) getExpandableListAdapter().getChild(parentPosition, position);
+			for(Audio a: mStore.buscarAudioEn(String.valueOf(album.getId()))) cola.agregar(a);
+		}
 	}
 }

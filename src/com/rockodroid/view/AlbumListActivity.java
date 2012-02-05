@@ -44,20 +44,17 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  */
 public class AlbumListActivity extends ListActivity {
 
-	private static Context context;
 	private static Queue cola;
-	private static AlbumListAdapter adapter;
 	private static MediaStore mStore;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context = getApplicationContext();
+		Context context = getApplicationContext();
 		cola = Queue.getCola();
-
-		mStore = new MediaStore(getApplicationContext());
-		adapter = new AlbumListAdapter(getApplicationContext(), mStore.buscarAlbums());
-		setListAdapter(adapter);
+		mStore = new MediaStore(context);
+		
+		setListAdapter(new AlbumListAdapter(context, mStore.buscarAlbums()));
 		
 		getListView().setFastScrollEnabled(true);
 		registerForContextMenu(getListView());
@@ -72,17 +69,14 @@ public class AlbumListActivity extends ListActivity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
-		case R.id.menu_context_enqueue:
-			Album album = adapter.getItem(info.position);
-			for(Audio a: mStore.buscarAudioEn(String.valueOf(album.getId()))) cola.agregar(a);
-			return true;
 		case R.id.menu_context_play:
-			
+			cola.limpiar();
+		case R.id.menu_context_enqueue:
+			agregarACola(item);
 			return true;
 		case R.id.menu_context_ver_cola:
-			startActivity(new Intent(context, QueueActivity.class));
+			startActivity(new Intent(this, QueueActivity.class));
 			return true;
 			default:
 				return super.onContextItemSelected(item);
@@ -98,5 +92,11 @@ public class AlbumListActivity extends ListActivity {
 		i.putExtra("tipoID", ItemExploradorActivity.ALBUM_ITEMS);
 		i.putExtra("id", String.valueOf(album.getId()));
 		startActivity(i);
+	}
+
+	private void agregarACola(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		Album album = (Album)getListAdapter().getItem(info.position);
+		for(Audio a: mStore.buscarAudioEn(String.valueOf(album.getId()))) cola.agregar(a);
 	}
 }
