@@ -17,26 +17,26 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-<!--
-	<item 
-	    android:id="@+id/menu_home_play_all"
-	    android:title="Reproducir todo"
-	    android:icon="@drawable/ic_estado_play" />
--->
+
 	<item 
 	    android:id="@+id/menu_home_shuffle_all"
 	    android:title="Todo aleatorio"
 	    android:icon="@drawable/ic_shuffle_all" />
-
+<!--
 	<item 
 	    android:id="@+id/menu_home_buscar"
 	    android:title="Buscar"
 	    android:icon="@drawable/ic_buscar" />
+-->
+	<item 
+	    android:id="@+id/menu_home_ver_cola"
+	    android:title="Ver Cola"
+	    android:icon="@drawable/ic_ver_cola" />
 
 	<item
 	    android:id="@+id/menu_home_player"
 	    android:title="Ver reproductor"
-	    android:icon="@drawable/ic_more" />
+	    android:icon="@drawable/ic_ver_player" />
 
 	<item
 	    android:id="@+id/menu_home_conf"
