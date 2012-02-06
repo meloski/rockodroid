@@ -20,7 +20,6 @@ package com.rockodroid.view;
 import com.rockodroid.R;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.queue.QueueAdapter;
-import com.rockodroid.model.vo.MediaItem;
 import com.rockodroid.view.pref.PreferenciasActivity;
 
 import android.app.ListActivity;
@@ -32,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
@@ -108,5 +108,12 @@ public class QueueActivity extends ListActivity {
 			default:
 				return super.onContextItemSelected(item);
 		}
+	}
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		cola.setActual(position);
+		// Notificar al service
 	}
 }

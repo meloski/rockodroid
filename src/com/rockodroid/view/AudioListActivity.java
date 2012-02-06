@@ -32,6 +32,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
@@ -84,5 +85,13 @@ public class AudioListActivity extends ListActivity{
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		Audio audio = (Audio)getListAdapter().getItem(info.position);
 		cola.agregar(audio);
+	}
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		cola.limpiar();
+		cola.agregar((Audio)getListAdapter().getItem(position));
+		startActivity(new Intent(this, PlayerActivity.class));
 	}
 }
