@@ -24,10 +24,12 @@
          android:id="@+id/mp_control_play"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:src="@drawable/ic_media_pause"
+         android:src="@drawable/ic_media_play"
          android:clickable="true"
          android:layout_alignParentBottom="true"
-         android:layout_centerHorizontal="true" />
+         android:layout_centerHorizontal="true"
+         android:layout_marginLeft="5dp"
+         android:layout_marginRight="5dp" />
     
 	<ImageView
          android:id="@+id/mp_control_atras"
@@ -104,6 +106,7 @@
         android:layout_alignParentLeft="true"
         android:layout_above="@+id/mp_layout_info"
         android:src="@drawable/ic_mp_repeat_off"
+        android:layout_marginRight="10dp"
         android:clickable="true" />
 
     <ImageView
@@ -113,6 +116,7 @@
         android:layout_toRightOf="@+id/mp_modo_repeticion"
         android:layout_above="@+id/mp_layout_info"
         android:src="@drawable/ic_mp_shuffle_off"
+        android:layout_marginRight="10dp"
         android:clickable="true" />
 
     <ImageView
@@ -132,6 +136,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
         android:layout_above="@+id/mp_modo_repeticion" >
 
     </FrameLayout>
