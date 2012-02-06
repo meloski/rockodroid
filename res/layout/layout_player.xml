@@ -24,7 +24,7 @@
          android:id="@+id/mp_control_play"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:src="@drawable/ic_media_play"
+         android:src="@drawable/ic_media_play_selector"
          android:clickable="true"
          android:layout_alignParentBottom="true"
          android:layout_centerHorizontal="true"
@@ -35,7 +35,7 @@
          android:id="@+id/mp_control_atras"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:src="@drawable/ic_media_backward"
+         android:src="@drawable/ic_media_backward_selector"
          android:clickable="true"
          android:layout_alignParentBottom="true"
     	 android:layout_toLeftOf="@+id/mp_control_play" />
@@ -44,7 +44,7 @@
          android:id="@+id/mp_control_adelante"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:src="@drawable/ic_media_forward"
+         android:src="@drawable/ic_media_forward_selector"
          android:clickable="true"
          android:layout_alignParentBottom="true"
          android:layout_toRightOf="@+id/mp_control_play" />
@@ -53,7 +53,7 @@
          android:id="@+id/mp_cola"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:src="@drawable/ic_queue"
+         android:src="@drawable/ic_queue_selector"
          android:clickable="true"
          android:layout_alignParentBottom="true"
          android:layout_alignParentRight="true" />
