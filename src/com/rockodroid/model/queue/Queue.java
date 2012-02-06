@@ -182,7 +182,10 @@ public class Queue {
 	 * @param actual - posición actual en la lista.
 	 */
 	public void setActual(int actual) {
-		
+		if(actual >= 0 && actual < elementos.size()) {
+			current = actual;
+			configurarModoEleccion(null);
+		}
 	}
 
 	/* Accesores */
