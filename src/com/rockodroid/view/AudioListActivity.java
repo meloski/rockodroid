@@ -70,6 +70,9 @@ public class AudioListActivity extends ListActivity{
 		switch(item.getItemId()) {
 		case R.id.menu_context_play:
 			cola.limpiar();
+			agregarACola(item);
+			startActivity(new Intent(this, PlayerActivity.class));
+			return true;
 		case R.id.menu_context_enqueue:
 			agregarACola(item);
 			return true;

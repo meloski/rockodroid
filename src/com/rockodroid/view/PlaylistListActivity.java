@@ -76,6 +76,7 @@ public class PlaylistListActivity extends ListActivity {
 			cola.limpiar();
 			PlayList pl = (PlayList)getListAdapter().getItem(info.position);
 			for(Audio a: mStore.buscarAudioDePlayList(String.valueOf(pl.getId()))) cola.agregar(a);
+			startActivity(new Intent(this, PlayerActivity.class));
 			return true;
 		case R.id.menu_context_rename:
 			
