@@ -19,6 +19,7 @@ package com.rockodroid;
 
 import com.rockodroid.data.media.MediaStore;
 import com.rockodroid.model.queue.Queue;
+import com.rockodroid.model.vo.Audio;
 import com.rockodroid.model.vo.MediaItem;
 import com.rockodroid.view.AlbumListActivity;
 import com.rockodroid.view.ArtistaListActivity;
@@ -36,7 +37,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 /**
  * Esta clase permite seleccionar la categoría por la cual buscar el
@@ -48,6 +53,12 @@ import android.widget.TabHost;
  *
  */
 public class HomeActivity extends ActivityGroup {
+
+	private static TextView statusAudio;
+	private static TextView statusArtista;
+	private static ImageView statusIcon;
+	private static ViewGroup statusView;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,26 +80,44 @@ public class HomeActivity extends ActivityGroup {
         	mSpec = mTabHost.newTabSpec("artista").setIndicator("Artista",
         			mResources.getDrawable(R.drawable.ic_tab_artista)).setContent(intent);
         	mTabHost.addTab(mSpec);
-        	
+
         	intent = new Intent(this, AlbumListActivity.class);
         	mSpec = mTabHost.newTabSpec("album").setIndicator("Álbum",
         			mResources.getDrawable(R.drawable.ic_tab_disco)).setContent(intent);
         	mTabHost.addTab(mSpec);
-        	
+
         	intent = new Intent(this, AudioListActivity.class);
         	mSpec = mTabHost.newTabSpec("archivos").setIndicator("Archivos",
         			mResources.getDrawable(R.drawable.ic_tab_nota)).setContent(intent);
         	mTabHost.addTab(mSpec);
-        	
+
         	intent = new Intent(this, PlaylistListActivity.class);
         	mSpec = mTabHost.newTabSpec("playlist").setIndicator("Playlist",
         			mResources.getDrawable(R.drawable.ic_tab_lista)).setContent(intent);
         	mTabHost.addTab(mSpec);
-        	
+
         	mTabHost.setCurrentTab(0);        	
         }catch(Exception e){
         	Log.e("CREACION TAB", e.toString());
         }
+        // Panel que muestra el Item que está actualmente reproduciendose.
+        statusView = (ViewGroup) findViewById(R.id.home_status_panel);
+        statusView.setOnClickListener(new View.OnClickListener() {
+
+			public void onClick(View v) {
+				startActivity(new Intent(HomeActivity.this, PlayerActivity.class));
+			}
+		});
+        statusAudio = (TextView) findViewById(R.id.home_status_audio);
+        statusArtista = (TextView) findViewById(R.id.home_status_artista);
+        statusIcon = (ImageView) findViewById(R.id.home_status_icon);
+        configurarReproduciendoAhora();
+    }
+
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	configurarReproduciendoAhora();
     }
 
     @Override
@@ -118,6 +147,21 @@ public class HomeActivity extends ActivityGroup {
     		return true;
     	default:
     		return super.onOptionsItemSelected(item);
+    	}
+    }
+
+    private void configurarReproduciendoAhora() {
+    	MediaItem mi = Queue.getCola().getActual();
+    	if(mi != null) {
+    		statusAudio.setText(mi.getTitulo());
+    		if(mi.getTipo()==MediaItem.TipoMedia.Audio) {
+    			statusArtista.setText(((Audio)mi).getArtista());
+    		}
+    		//Para saber el estado hay que 'preguntarle' al servicio
+    		statusIcon.setImageResource(R.drawable.ic_estado_pause);
+    		statusView.setVisibility(View.VISIBLE);
+    	}else {
+    		statusView.setVisibility(View.INVISIBLE);
     	}
     }
 }
