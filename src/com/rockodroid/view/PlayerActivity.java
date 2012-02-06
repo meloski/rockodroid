@@ -108,6 +108,20 @@ public class PlayerActivity extends Activity {
 			tvArtista.setText(" ");
 			tvAlbum.setText(" ");
 		}
+		// Actualizacion de modo de repeticion
+		if(queue.getModoRepeticion() == Queue.ModoRepeticion.NORMAL) {
+			ivRepetir.setImageResource(R.drawable.ic_mp_repeat_off);
+		}else if(queue.getModoRepeticion() == Queue.ModoRepeticion.LISTA) {
+			ivRepetir.setImageResource(R.drawable.ic_mp_repeat_all);
+		}else {
+			ivRepetir.setImageResource(R.drawable.ic_mp_repeat_once);
+		}
+		//Actualizacion de modo de eleccion
+		if(queue.getModoEleccion() instanceof ModoNormal) {
+			ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_off);
+		}else {
+			ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_on);
+		}
 	}
 
 	@Override
@@ -196,7 +210,7 @@ public class PlayerActivity extends Activity {
 
 		}
 	};
-	
+
 	private final OnClickListener queueListener = new OnClickListener() {
 
 		public void onClick(View v) {
