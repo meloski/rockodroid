@@ -17,16 +17,20 @@
  */
 package com.rockodroid.view;
 
+import com.rockodroid.HomeActivity;
 import com.rockodroid.R;
 import com.rockodroid.model.queue.Queue;
-import com.rockodroid.model.vo.Album;
 import com.rockodroid.model.vo.Audio;
 import com.rockodroid.model.vo.MediaItem;
+import com.rockodroid.view.pref.PreferenciasActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -81,6 +85,30 @@ public class PlayerActivity extends Activity {
 			tvTitulo.setText(" ");
 			tvArtista.setText(" ");
 			tvAlbum.setText(" ");
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflador = getMenuInflater();
+		inflador.inflate(R.menu.menu_player, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case R.id.menu_player_libreria:
+			startActivity(new Intent(this, HomeActivity.class));
+			return true;
+		case R.id.menu_player_cola:
+			startActivity(new Intent(this, QueueActivity.class));
+			return true;
+		case R.id.menu_player_configuracion:
+			startActivity(new Intent(this, PreferenciasActivity.class));
+			return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 	}
 }
