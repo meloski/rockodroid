@@ -19,6 +19,7 @@ package com.rockodroid.view;
 
 import com.rockodroid.HomeActivity;
 import com.rockodroid.R;
+import com.rockodroid.model.queue.ModoNormal;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.vo.Audio;
 import com.rockodroid.model.vo.MediaItem;
@@ -56,6 +57,8 @@ public class PlayerActivity extends Activity {
 	private static ImageView ivRepetir;
 	private static ImageView ivAleatorio;
 	private static ImageView ivEstrella;
+
+	private boolean playing = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +139,11 @@ public class PlayerActivity extends Activity {
 	private final OnClickListener playListener = new OnClickListener() {
 
 		public void onClick(View v) {
-			
+			if(playing)
+				ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
+			else
+				ivPlay.setImageResource(R.drawable.ic_media_play_selector);
+			playing = !playing;
 		}
 	};
 
@@ -157,25 +164,36 @@ public class PlayerActivity extends Activity {
 	private final OnClickListener repetirListener = new OnClickListener() {
 
 		public void onClick(View v) {
-			
+			if(queue.getModoRepeticion() == Queue.ModoRepeticion.NORMAL) {
+				ivRepetir.setImageResource(R.drawable.ic_mp_repeat_all);
+				queue.setModoRepeticion(Queue.ModoRepeticion.LISTA);
+			}else if(queue.getModoRepeticion() == Queue.ModoRepeticion.LISTA) {
+				ivRepetir.setImageResource(R.drawable.ic_mp_repeat_once);
+				queue.setModoRepeticion(Queue.ModoRepeticion.ITEM);
+			}else {
+				ivRepetir.setImageResource(R.drawable.ic_mp_repeat_off);
+				queue.setModoRepeticion(Queue.ModoRepeticion.NORMAL);
+			}
 		}
 	};
 
 	private final OnClickListener aleatorioListener = new OnClickListener() {
 
 		public void onClick(View v) {
-			
+			if(queue.getModoEleccion() instanceof ModoNormal) {
+				queue.setAleatorio(true);
+				ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_on);
+			}else {
+				queue.setAleatorio(false);
+				ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_off);
+			}
 		}
 	};
 
 	private final OnClickListener estrellaListener = new OnClickListener() {
 
 		public void onClick(View v) {
-			if(ivEstrella.getDrawableState()[0] == R.drawable.ic_estrella_off) {
-				ivEstrella.setImageResource(R.drawable.ic_estrella_on);
-			}else {
-				ivEstrella.setImageResource(R.drawable.ic_estrella_off);
-			}
+
 		}
 	};
 	
