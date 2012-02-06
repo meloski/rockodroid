@@ -73,6 +73,12 @@ public class PlayerActivity extends Activity {
 		actualizarInterfazInfo();
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		actualizarInterfazInfo();
+	}
+
 	private void actualizarInterfazInfo() {
 		MediaItem currentMedia = queue.getActual();
 		if(currentMedia != null) {
