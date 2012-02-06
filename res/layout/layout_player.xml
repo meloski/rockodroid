@@ -24,7 +24,7 @@
          android:id="@+id/mp_control_play"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:src="@drawable/ic_media_play"
+         android:src="@drawable/ic_media_pause"
          android:clickable="true"
          android:layout_alignParentBottom="true"
          android:layout_centerHorizontal="true" />
