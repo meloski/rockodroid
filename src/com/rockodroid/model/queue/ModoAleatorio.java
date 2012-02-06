@@ -47,7 +47,7 @@ public class ModoAleatorio implements ModoEleccion {
 	 */
 	private void crearIndiceAleatorio(int cantidad) {
 		for(int i = 0; i < cantidad; i++) elementos.add(new Integer(i));
-		desordenar();
+		if(cantidad > 0) desordenar();
 	}
 
 	/**
