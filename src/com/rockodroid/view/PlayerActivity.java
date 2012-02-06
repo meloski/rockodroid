@@ -50,6 +50,12 @@ public class PlayerActivity extends Activity {
 	private static TextView tvTitulo;
 	private static TextView tvAlbum;
 
+	private static ImageView ivPlay;
+	private static ImageView ivAtras;
+	private static ImageView ivAdelante;
+	private static ImageView ivRepetir;
+	private static ImageView ivAleatorio;
+	private static ImageView ivEstrella;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,17 +64,24 @@ public class PlayerActivity extends Activity {
 
 		context = getApplicationContext();
 		queue = Queue.getCola();
-		ivQueue = (ImageView) findViewById(R.id.mp_cola);
-		ivQueue.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				PlayerActivity.this.startActivity(new Intent(PlayerActivity.context , QueueActivity.class));
-			}
-		});
-
 		tvTitulo = (TextView) findViewById(R.id.mp_info_audio);
 		tvArtista = (TextView) findViewById(R.id.mp_info_artista);
 		tvAlbum = (TextView) findViewById(R.id.mp_info_album);
+		ivQueue = (ImageView) findViewById(R.id.mp_cola);
+		ivPlay = (ImageView) findViewById(R.id.mp_control_play);
+		ivAtras = (ImageView) findViewById(R.id.mp_control_atras);
+		ivAdelante = (ImageView) findViewById(R.id.mp_control_adelante);
+		ivRepetir = (ImageView) findViewById(R.id.mp_modo_repeticion);
+		ivAleatorio = (ImageView) findViewById(R.id.mp_modo_seleccion);
+		ivEstrella = (ImageView) findViewById(R.id.mp_puntuacion);
+
+		ivQueue.setOnClickListener(queueListener);
+		ivPlay.setOnClickListener(playListener);
+		ivAtras.setOnClickListener(atrasListener);
+		ivAdelante.setOnClickListener(adelanteListener);
+		ivRepetir.setOnClickListener(repetirListener);
+		ivAleatorio.setOnClickListener(aleatorioListener);
+		ivEstrella.setOnClickListener(estrellaListener);
 
 		actualizarInterfazInfo();
 	}
@@ -117,4 +130,59 @@ public class PlayerActivity extends Activity {
 				return super.onOptionsItemSelected(item);
 		}
 	}
+
+	/* ** OnClickListeners ** */
+
+	private final OnClickListener playListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			
+		}
+	};
+
+	private final OnClickListener atrasListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			
+		}
+	};
+
+	private final OnClickListener adelanteListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			
+		}
+	};
+
+	private final OnClickListener repetirListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			
+		}
+	};
+
+	private final OnClickListener aleatorioListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			
+		}
+	};
+
+	private final OnClickListener estrellaListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			if(ivEstrella.getDrawableState()[0] == R.drawable.ic_estrella_off) {
+				ivEstrella.setImageResource(R.drawable.ic_estrella_on);
+			}else {
+				ivEstrella.setImageResource(R.drawable.ic_estrella_off);
+			}
+		}
+	};
+	
+	private final OnClickListener queueListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			PlayerActivity.this.startActivity(new Intent(PlayerActivity.context , QueueActivity.class));
+		}
+	};
 }

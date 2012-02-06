@@ -139,6 +139,13 @@
         android:layout_margin="5dp"
         android:layout_above="@+id/mp_modo_repeticion" >
 
+	    <ImageView
+	        android:id="@+id/mp_imagen_caratula"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/album_unknow"
+	        android:layout_gravity="center" />
+		    
     </FrameLayout>
 
 </RelativeLayout>
