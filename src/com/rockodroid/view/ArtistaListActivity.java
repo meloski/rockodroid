@@ -24,7 +24,9 @@ import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.vo.Album;
 import com.rockodroid.model.vo.Artista;
 import com.rockodroid.model.vo.Audio;
+import com.rockodroid.view.notification.DialogHelper;
 
+import android.app.Dialog;
 import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -48,17 +50,37 @@ public class ArtistaListActivity extends ExpandableListActivity {
 
 	private static Queue cola;
 	private static MediaStore mStore;
+	private static ArtistaListAdapter adapter;
+
+	private static Dialog dialog;
+
+	private final Runnable setAdapter = new Runnable() {
+		
+		public void run() {
+			ArtistaListActivity.this.setListAdapter(adapter);
+			if(dialog != null && dialog.isShowing()) dialog.dismiss();
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Context context = getApplicationContext();
 		mStore = new MediaStore(context);
-		cola = Queue.getCola();		
+		cola = Queue.getCola();
 		getExpandableListView().setFastScrollEnabled(true);
-		setListAdapter(new ArtistaListAdapter(context, mStore.buscarArtistas()));
+		//setListAdapter(new ArtistaListAdapter(context, mStore.buscarArtistas()));
+		showDialog(DialogHelper.PROGRESS_DIALOG);
+		new Thread(new Runnable() {
 
-		registerForContextMenu(getExpandableListView());
+			public void run() {
+				//ArtistaListActivity.this.showDialog(DialogHelper.PROGRESS_DIALOG);
+				adapter = new ArtistaListAdapter(getApplicationContext(), mStore.buscarArtistas());
+				runOnUiThread(setAdapter);
+			}
+		}).start();
+
+		registerForContextMenu(getExpandableListView());		
 	}
 
 	@Override
@@ -97,6 +119,12 @@ public class ArtistaListActivity extends ExpandableListActivity {
 		i.putExtra("id", String.valueOf(album.getId()));
 		startActivity(i);
 		return true;
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		dialog = DialogHelper.crearProgressDialog(this, "Cargando", "", false);
+		return dialog;
 	}
 
 	private void agregarACola(MenuItem item) {

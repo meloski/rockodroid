@@ -17,9 +17,9 @@
  */
 package com.rockodroid.view.notification;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 
 /**
  * Permite la creación y manejo rápido de diálogos para
@@ -43,8 +43,8 @@ public class DialogHelper {
 	 * @param context - Contexto de la aplicacion
 	 * @return ProgressDialog
 	 */
-	public static Dialog crearProgressDialog(Context context, String titulo, String msg, boolean barraHtl) {
-		ProgressDialog dialog = new ProgressDialog(context);
+	public static Dialog crearProgressDialog(Activity act, String titulo, String msg, boolean barraHtl) {
+		ProgressDialog dialog = new ProgressDialog(act);
 		dialog.setTitle(titulo);
 		dialog.setMessage(msg);
 		dialog.setCancelable(false);
