@@ -127,20 +127,36 @@ public class ArtistaListActivity extends ExpandableListActivity {
 		return dialog;
 	}
 
+	/**
+	 * Agrega las intancias de Media seleccionadas a la cola. Es posible 
+	 * @param item
+	 */
 	private void agregarACola(MenuItem item) {
 		ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
 		int position, parentPosition;
 		if(ExpandableListView.getPackedPositionType(info.packedPosition) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
 			position = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-			Artista artista = (Artista) getExpandableListAdapter().getGroup(position);
-			for(Album d: artista.getDiscos())
-				for(Audio a: mStore.buscarAudioEn(String.valueOf(d.getId())))
-					cola.agregar(a);
+			final Artista artista = (Artista) getExpandableListAdapter().getGroup(position);
+			/* El proceso se hace en un hilo aparte */
+			new Thread(new Runnable() {
+
+				public void run() {
+					for(Album d: artista.getDiscos())
+						for(Audio a: mStore.buscarAudioEn(String.valueOf(d.getId())))
+							cola.agregar(a);
+				}
+			}).start();
 		}else {
 			parentPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
 			position = ExpandableListView.getPackedPositionChild(info.packedPosition);
-			Album album = (Album) getExpandableListAdapter().getChild(parentPosition, position);
-			for(Audio a: mStore.buscarAudioEn(String.valueOf(album.getId()))) cola.agregar(a);
+			final Album album = (Album) getExpandableListAdapter().getChild(parentPosition, position);
+			// El proceso pesado se hace en un hilo aparte.
+			new Thread(new Runnable() {
+
+				public void run() {
+					for(Audio a: mStore.buscarAudioEn(String.valueOf(album.getId()))) cola.agregar(a);					
+				}
+			}).start();
 		}
 	}
 }
