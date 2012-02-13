@@ -17,6 +17,8 @@
  */
 package com.rockodroid.model.vo;
 
+import android.net.Uri;
+
 /**
  * Representa un item multimedia de audio.
  * Tiene las propiedades heredadas de MediaItem además de las propias
@@ -61,4 +63,8 @@ public class Audio extends MediaItem {
 		return album;
 	}
 
+	public Uri getUri() {
+		return Uri.withAppendedPath(
+				android.provider.MediaStore.Audio.Media.INTERNAL_CONTENT_URI, String.valueOf(getId()));
+	}
 }

@@ -17,6 +17,8 @@
  */
 package com.rockodroid.model.vo;
 
+import android.net.Uri;
+
 /**
  * Representa un Item Multimedia: audio o video.
  * Contiene las propiedades básicas de ambos items soportados.
@@ -62,5 +64,10 @@ public class MediaItem {
 	//El tamaño en bytes
 	public long getTamanio() {
 		return tamanio;
+	}
+	
+	public Uri getUri() {
+		return Uri.withAppendedPath(
+				android.provider.MediaStore.Audio.Media.INTERNAL_CONTENT_URI, String.valueOf(getId()));
 	}
 }

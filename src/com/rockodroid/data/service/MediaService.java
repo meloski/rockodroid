@@ -19,6 +19,8 @@ package com.rockodroid.data.service;
 
 import com.rockodroid.HomeActivity;
 import com.rockodroid.R;
+import com.rockodroid.model.queue.Queue;
+import com.rockodroid.model.vo.MediaItem;
 import com.rockodroid.view.notification.NotificationHelper;
 
 import android.app.Service;
@@ -28,9 +30,9 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.text.AlteredCharSequence;
 
 /**
  * Servicio encargado de la reproducción de los archivos
@@ -44,13 +46,27 @@ import android.text.AlteredCharSequence;
 public class MediaService extends Service implements OnPreparedListener, OnErrorListener,
 				AudioFocusCambiable{
 
+	/* Acciones */
+	public static final int PlAY = 0;
+	public static final int PAUSE = 1;
+	public static final int ATRAS = 2;
+	public static final int ADELANTE = 3;
+
 	private static final int NOTIFICATION_ID = 1;
 	private static final float VOL_SUAVE = 0.1f;
-	
+
+	public enum Estado {inicilizado, listo, reproduciendo, pausado, detenido};
+
+	private static Estado mEstado = Estado.detenido;
+
 	private MediaPlayer mPlayer;
 
 	private NotificationHelper notificationHelper;
 	private AudioFocusHelper audioFocusHelper;
+
+	private static Queue cola;
+	private PlayerBinder binder;
+	private MediaItem itemActual;
 
 	/**
 	 * El sistema llama este método cuando otro componente ejecuta
@@ -58,7 +74,12 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		
+		int accion = Integer.valueOf(intent.getAction());
+		if(accion == PlAY) {
+			itemActual = cola.getActual();
+			if(itemActual != null)
+				alternarReproduccion();
+		}
 		return START_NOT_STICKY;
 	}
 
@@ -71,6 +92,8 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		Context c = getApplicationContext();
 		notificationHelper = new NotificationHelper(c);
 		audioFocusHelper = new AudioFocusHelper(c, this);
+		cola = Queue.getCola();
+		binder = new PlayerBinder();
 		super.onCreate();
 	}
 
@@ -81,8 +104,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 */
 	@Override
 	public IBinder onBind(Intent arg0) {
-		
-		return null;
+		return binder;
 	}
 
 	/**
@@ -91,14 +113,13 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 */
 	@Override
 	public void onDestroy() {
-
+		liberarRecursos(true);
 		super.onDestroy();
 	}
 
 	/**
 	 * Se encarga de iniciarlizar el MediaPlayer y dejarlo
 	 * listo para asignar el recurso multimedia.
-	 * 
 	 */
 	private void iniciarPlayer() {
 		if (mPlayer == null) {
@@ -110,6 +131,13 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		}else {
 			mPlayer.reset();
 		}
+		try {
+			mPlayer.setDataSource(getApplicationContext(), itemActual.getUri());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mEstado = Estado.inicilizado;
+		mPlayer.prepareAsync();
 	}
 
 	/**
@@ -123,6 +151,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		if(total == true && mPlayer != null) {
 			mPlayer.release();
 			mPlayer = null;
+			mEstado = Estado.detenido;
 		}
 	}
 
@@ -134,10 +163,12 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 			if(mPlayer.isPlaying()) {
 				liberarRecursos(false);
 				mPlayer.pause();
+				mEstado = Estado.pausado;
 			}else {
 				startForeground(NOTIFICATION_ID, notificationHelper.crearNotificacion(
 						"Rockodroid", "", "", R.drawable.ic_disco, HomeActivity.class, true));
 				mPlayer.start();
+				mEstado = Estado.reproduciendo;
 			}
 		}
 	}
@@ -169,12 +200,13 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	}
 
 	/*** CALLBACKS ***/
-	
+
 	/**
 	 * Es llamado cuando el MediaPlayer ha codificado y preparado el
 	 * recurso media y está listo para comenzar su reproducción.
 	 */
 	public void onPrepared(MediaPlayer mp) {
+		mEstado = Estado.listo;
 		alternarReproduccion();
 	}
 
@@ -188,6 +220,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		//El MediaPlayer está en estado de error, debería ser reseteado.
 		mPlayer.reset();
+		mEstado = Estado.detenido;
 		return false;
 	}
 
@@ -202,7 +235,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 * Callback llamado al perder el foco indefinidamente.
 	 */
 	public void alPerderFoco() {
-		liberarRecursos(false);
+		liberarRecursos(true);
 	}
 
 	/**
@@ -213,6 +246,33 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 			establecerVolumen(VOL_SUAVE);
 		}else {
 			alternarReproduccion();
+		}
+	}
+
+	/**
+	 * Clase Binder con la cual los componentes de la aplicación puede comunicarse con el servicio.
+	 * 
+	 */
+	public class PlayerBinder extends Binder {
+
+		public PlayerBinder() {
+			
+		}
+
+		public void play() {
+			
+		}
+
+		public void pause() {
+			
+		}
+
+		public void siguiente() {
+			
+		}
+
+		public void atras() {
+			
 		}
 	}
 }
