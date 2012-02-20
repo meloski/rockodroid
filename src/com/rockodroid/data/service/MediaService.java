@@ -63,6 +63,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 
 	private NotificationHelper notificationHelper;
 	private AudioFocusHelper audioFocusHelper;
+	private AudioExternoIntent audioExternoHelper;
 
 	private static Queue cola;
 	private PlayerBinder binder;
@@ -77,8 +78,9 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		int accion = Integer.valueOf(intent.getAction());
 		if(accion == PlAY) {
 			itemActual = cola.getActual();
-			if(itemActual != null)
-				alternarReproduccion();
+			if(itemActual != null) {
+				iniciarPlayer();
+			}
 		}
 		return START_NOT_STICKY;
 	}
@@ -90,10 +92,11 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	@Override
 	public void onCreate() {
 		Context c = getApplicationContext();
+		binder = new PlayerBinder();
 		notificationHelper = new NotificationHelper(c);
 		audioFocusHelper = new AudioFocusHelper(c, this);
+		audioExternoHelper = new AudioExternoIntent(c, binder);
 		cola = Queue.getCola();
-		binder = new PlayerBinder();
 		super.onCreate();
 	}
 
@@ -148,6 +151,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 */
 	private void liberarRecursos(boolean total) {
 		stopForeground(true);
+		audioFocusHelper.dejarAudioFocus();
 		if(total == true && mPlayer != null) {
 			mPlayer.release();
 			mPlayer = null;
@@ -165,10 +169,12 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 				mPlayer.pause();
 				mEstado = Estado.pausado;
 			}else {
-				startForeground(NOTIFICATION_ID, notificationHelper.crearNotificacion(
-						"Rockodroid", "", "", R.drawable.ic_disco, HomeActivity.class, true));
-				mPlayer.start();
-				mEstado = Estado.reproduciendo;
+				if(audioFocusHelper.requerirAudioFocus()) {
+					startForeground(NOTIFICATION_ID, notificationHelper.crearNotificacion(
+							"Rockodroid", "", "", R.drawable.ic_disco, HomeActivity.class, true));
+					mPlayer.start();
+					mEstado = Estado.reproduciendo;
+				}
 			}
 		}
 	}
@@ -187,7 +193,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	private void retroceder() {
 		
 	}
-	
+
 	/**
 	 * Cambia el volumen del MediaPlayer por el indicado.
 	 * Establece el mismo volumen tanto en el izq como el der.
