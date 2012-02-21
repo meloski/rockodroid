@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Binder;
@@ -44,7 +45,7 @@ import android.os.PowerManager;
  *
  */
 public class MediaService extends Service implements OnPreparedListener, OnErrorListener,
-				AudioFocusCambiable{
+				AudioFocusCambiable, OnCompletionListener{
 
 	/* Acciones */
 	public static final int PlAY = 0;
@@ -80,6 +81,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 			itemActual = cola.getActual();
 			if(itemActual != null) {
 				iniciarPlayer();
+				configurarMedia();
 			}
 		}
 		return START_NOT_STICKY;
@@ -130,10 +132,14 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 			mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 			mPlayer.setOnPreparedListener(this);
+			mPlayer.setOnCompletionListener(this);
 			mPlayer.setOnErrorListener(this);
 		}else {
 			mPlayer.reset();
 		}
+	}
+
+	private void configurarMedia() {
 		try {
 			mPlayer.setDataSource(getApplicationContext(), itemActual.getUri());
 		} catch (Exception e) {
@@ -146,7 +152,9 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	/**
 	 * Libera los recursos del MediaPlayer según lo indicado por
 	 * el parámetro total.
-	 * 
+	 * - El servicio deja de estar en primer plano, se libera la notificación.
+	 * - Se deja el audioFocus.
+	 * - En caso de liberación total, se libera el mPlayer.
 	 * @param total - Indica si se liberan todos los recursos.
 	 */
 	private void liberarRecursos(boolean total) {
@@ -161,6 +169,13 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 
 	/**
 	 * Detiene o inicia el MediaPlayer alternando su estado. 
+	 * Al pausar
+	 * - Libera recursos, cambia el estado del servicio.
+	 * Al Reproducir
+	 * - Hace peticion del audioFocus.
+	 * - Actualiza la notificación.
+	 * - Inicia la reproducción.
+	 * - Cambia el estado.
 	 */
 	private void alternarReproduccion() {
 		if(mPlayer != null) {
@@ -171,7 +186,8 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 			}else {
 				if(audioFocusHelper.requerirAudioFocus()) {
 					startForeground(NOTIFICATION_ID, notificationHelper.crearNotificacion(
-							"Rockodroid", "", "", R.drawable.ic_disco, HomeActivity.class, true));
+							"Rockodroid", "Reproduciendo", itemActual.getTitulo() + " : " + String.valueOf(mPlayer.getDuration()), 
+							R.drawable.ic_estado_play, HomeActivity.class, true));
 					mPlayer.start();
 					mEstado = Estado.reproduciendo;
 				}
@@ -183,7 +199,10 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 * Selecciona el siguiente item de la cola.
 	 */
 	private void avanzar() {
-		
+		itemActual = cola.getSiguiente();
+		iniciarPlayer(); // Se inicializa o resetea
+		configurarMedia(); // Se establece el uri al mPlayer y se prepara asíncronamente.
+		//Al terminar la preparación se llama a onPrepared donde se inicia la reproducción.
 	}
 
 	/**
@@ -191,7 +210,9 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 * anteriormente.
 	 */
 	private void retroceder() {
-		
+		itemActual = cola.getAnterior();
+		iniciarPlayer(); // Se inicializa o resetea
+		configurarMedia();
 	}
 
 	/**
@@ -256,6 +277,14 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	}
 
 	/**
+	 * Es llamado cuando el MediaPlayer termina de reproducir el actual item.
+	 * Si el loop está activado no se hace la llamada.
+	 */
+	public void onCompletion(MediaPlayer mp) {
+		avanzar();
+	}
+
+	/**
 	 * Clase Binder con la cual los componentes de la aplicación puede comunicarse con el servicio.
 	 * 
 	 */
@@ -266,19 +295,41 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		}
 
 		public void play() {
-			
+			alternarReproduccion();
 		}
 
 		public void pause() {
-			
+			alternarReproduccion();
 		}
 
 		public void siguiente() {
-			
+			avanzar();
 		}
 
 		public void atras() {
-			
+			retroceder();
+		}
+
+		public boolean isPlaying() {
+			return (mPlayer != null && mPlayer.isPlaying());
+		}
+
+		public int getDuracion() {
+			return (mPlayer != null)? mPlayer.getDuration(): 0;
+		}
+
+		public int getPosicion() {
+			return (mPlayer != null)? mPlayer.getCurrentPosition(): 0;
+		}
+		
+		public void setPosicion(int pos) {
+			if(mPlayer != null)
+				mPlayer.seekTo(pos);
+		}
+
+		public void setRepeticion(boolean rep) {
+			if(mPlayer != null)
+				mPlayer.setLooping(rep);
 		}
 	}
 }
