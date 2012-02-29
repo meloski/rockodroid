@@ -68,6 +68,7 @@ public class ArtistaListActivity extends ExpandableListActivity {
 		Context context = getApplicationContext();
 		mStore = new MediaStore(context);
 		cola = Queue.getCola();
+		cola.setContext(context); //La cola necesita tener el contexto para iniciar el service.
 		getExpandableListView().setFastScrollEnabled(true);
 		//setListAdapter(new ArtistaListAdapter(context, mStore.buscarArtistas()));
 		showDialog(DialogHelper.PROGRESS_DIALOG);

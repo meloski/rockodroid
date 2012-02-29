@@ -76,14 +76,14 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		int accion = Integer.valueOf(intent.getAction());
-		if(accion == PlAY) {
+		//int accion = Integer.valueOf(intent.getAction());
+		//if(accion == PlAY) {
 			itemActual = cola.getActual();
 			if(itemActual != null) {
 				iniciarPlayer();
 				configurarMedia();
 			}
-		}
+		//}
 		return START_NOT_STICKY;
 	}
 
@@ -295,11 +295,13 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		}
 
 		public void play() {
-			alternarReproduccion();
+			if(!isPlaying())
+				alternarReproduccion();
 		}
 
 		public void pause() {
-			alternarReproduccion();
+			if(isPlaying())
+				alternarReproduccion();
 		}
 
 		public void siguiente() {

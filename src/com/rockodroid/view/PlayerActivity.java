@@ -19,6 +19,8 @@ package com.rockodroid.view;
 
 import com.rockodroid.HomeActivity;
 import com.rockodroid.R;
+import com.rockodroid.data.service.MediaService.PlayerBinder;
+import com.rockodroid.data.service.ServiceBinderHelper;
 import com.rockodroid.model.queue.ModoNormal;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.vo.Audio;
@@ -28,13 +30,17 @@ import com.rockodroid.view.pref.PreferenciasActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 /**
@@ -58,7 +64,12 @@ public class PlayerActivity extends Activity {
 	private static ImageView ivAleatorio;
 	private static ImageView ivEstrella;
 
+	private SeekBar progressBar;
+
 	private boolean playing = true;
+
+	private ServiceBinderHelper binderHelper;
+	private PlayerBinder binder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +88,7 @@ public class PlayerActivity extends Activity {
 		ivRepetir = (ImageView) findViewById(R.id.mp_modo_repeticion);
 		ivAleatorio = (ImageView) findViewById(R.id.mp_modo_seleccion);
 		ivEstrella = (ImageView) findViewById(R.id.mp_puntuacion);
+		progressBar = (SeekBar) findViewById(R.id.mp_posicion);
 
 		ivQueue.setOnClickListener(queueListener);
 		ivPlay.setOnClickListener(playListener);
@@ -85,6 +97,13 @@ public class PlayerActivity extends Activity {
 		ivRepetir.setOnClickListener(repetirListener);
 		ivAleatorio.setOnClickListener(aleatorioListener);
 		ivEstrella.setOnClickListener(estrellaListener);
+		progressBar.setOnTouchListener(onTouchProgress);
+
+		/* Al crear esta instancia se une al servicio esperando obtener un PlayerBinder.
+		 * En la misma creacion de la instancia se inica el servicio en caso de que este
+		 * no haya iniciado ya. */
+		binderHelper = new ServiceBinderHelper(context);
+		binder = binderHelper.getBinder();
 
 		actualizarInterfazInfo();
 	}
@@ -93,6 +112,12 @@ public class PlayerActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		actualizarInterfazInfo();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		binderHelper.desconectar();
 	}
 
 	private void actualizarInterfazInfo() {
@@ -122,6 +147,11 @@ public class PlayerActivity extends Activity {
 		}else {
 			ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_on);
 		}
+		//Actualizar el botón de reproducción.
+		if(playing)
+			ivPlay.setImageResource(R.drawable.ic_media_play_selector);
+		else
+			ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
 	}
 
 	@Override
@@ -148,15 +178,35 @@ public class PlayerActivity extends Activity {
 		}
 	}
 
+	/* AsyncTask: Para actualizar el progress bar */
+
+	private class UpdateProgress extends AsyncTask<Integer, Integer, Void> {
+
+		@Override
+		protected Void doInBackground(Integer... params) {
+			
+			return null;
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			progressBar.setProgress(values[0]);
+		}
+	}
+
 	/* ** OnClickListeners ** */
 
 	private final OnClickListener playListener = new OnClickListener() {
 
 		public void onClick(View v) {
-			if(playing)
+			if(playing) {
+				binder.pause();
 				ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
-			else
+			}
+			else {
+				binder.play();
 				ivPlay.setImageResource(R.drawable.ic_media_play_selector);
+			}
 			playing = !playing;
 		}
 	};
@@ -164,14 +214,20 @@ public class PlayerActivity extends Activity {
 	private final OnClickListener atrasListener = new OnClickListener() {
 
 		public void onClick(View v) {
-			
+			if(binder != null)
+				binder.atras();
+			else
+				binder = binderHelper.getBinder();
 		}
 	};
 
 	private final OnClickListener adelanteListener = new OnClickListener() {
 
 		public void onClick(View v) {
-			
+			if(binder != null)
+				binder.siguiente();
+			else
+				binder = binderHelper.getBinder();
 		}
 	};
 
@@ -215,6 +271,14 @@ public class PlayerActivity extends Activity {
 
 		public void onClick(View v) {
 			PlayerActivity.this.startActivity(new Intent(PlayerActivity.context , QueueActivity.class));
+		}
+	};
+	
+	private final OnTouchListener onTouchProgress = new OnTouchListener() {
+
+		public boolean onTouch(View v, MotionEvent event) {
+			// Actualizar el player (Por medio del binder o por medio de otra Clase[?])
+			return false;
 		}
 	};
 }

@@ -20,6 +20,9 @@ package com.rockodroid.model.queue;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.rockodroid.model.vo.MediaItem;
 
 /**
@@ -50,6 +53,8 @@ public class Queue {
 
 	private int current;
 
+	static private Context context;
+	
 	// Constructor privado garantiza que no se crearán instancias fuera de esta clase.
 	private Queue() {
 		elementos = new ArrayList<MediaItem>();
@@ -85,7 +90,9 @@ public class Queue {
 	 */
 	public void agregar(MediaItem media) {
 		elementos.add(media);
-		if(current == -1) current = 0;
+		if(current == -1) {
+			current = 0;
+		}
 		configurarModoEleccion(null);
 	}
 
@@ -95,7 +102,9 @@ public class Queue {
 	 */
 	public void agregar(List<MediaItem> media) {
 		for(MediaItem m: media) elementos.add(m);
-		if(current == -1) current = 0;
+		if(current == -1){
+			current = 0;
+		}
 		configurarModoEleccion(null);
 	}
 
@@ -217,4 +226,7 @@ public class Queue {
 			this.mEleccion = new ModoNormal(elementos.size(), current);
 	}
 
+	public void setContext(Context c) {
+		context = c;
+	}
 }
