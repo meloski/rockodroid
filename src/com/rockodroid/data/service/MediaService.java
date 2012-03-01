@@ -17,10 +17,10 @@
  */
 package com.rockodroid.data.service;
 
-import com.rockodroid.HomeActivity;
 import com.rockodroid.R;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.vo.MediaItem;
+import com.rockodroid.view.PlayerActivity;
 import com.rockodroid.view.notification.NotificationHelper;
 
 import android.app.Service;
@@ -31,6 +31,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -67,7 +68,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	private AudioExternoIntent audioExternoHelper;
 
 	private static Queue cola;
-	private PlayerBinder binder;
+	private PlayerBinder binder = new PlayerBinder();
 	private MediaItem itemActual;
 
 	/**
@@ -94,7 +95,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	@Override
 	public void onCreate() {
 		Context c = getApplicationContext();
-		binder = new PlayerBinder();
+		//binder = new PlayerBinder();
 		notificationHelper = new NotificationHelper(c);
 		audioFocusHelper = new AudioFocusHelper(c, this);
 		audioExternoHelper = new AudioExternoIntent(c, binder);
@@ -141,7 +142,8 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 
 	private void configurarMedia() {
 		try {
-			mPlayer.setDataSource(getApplicationContext(), itemActual.getUri());
+			Uri mediaUri = itemActual.getUri();
+			mPlayer.setDataSource(getApplicationContext(), mediaUri);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -185,9 +187,11 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 				mEstado = Estado.pausado;
 			}else {
 				if(audioFocusHelper.requerirAudioFocus()) {
+					int duracion = mPlayer.getDuration()/1000;
+					String duracionStr = String.valueOf(duracion/60) + ":" + String.valueOf(duracion%60); 
 					startForeground(NOTIFICATION_ID, notificationHelper.crearNotificacion(
-							"Rockodroid", "Reproduciendo", itemActual.getTitulo() + " : " + String.valueOf(mPlayer.getDuration()), 
-							R.drawable.ic_estado_play, HomeActivity.class, true));
+							"Rockodroid", "Reproduciendo", itemActual.getTitulo() + " - " + duracionStr, 
+							R.drawable.ic_estado_play, PlayerActivity.class, true));
 					mPlayer.start();
 					mEstado = Estado.reproduciendo;
 				}
@@ -332,6 +336,10 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		public void setRepeticion(boolean rep) {
 			if(mPlayer != null)
 				mPlayer.setLooping(rep);
+		}
+
+		public boolean estaIniciado() {
+			return (mPlayer != null);
 		}
 	}
 }

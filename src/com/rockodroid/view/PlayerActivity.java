@@ -28,10 +28,13 @@ import com.rockodroid.model.vo.MediaItem;
 import com.rockodroid.view.pref.PreferenciasActivity;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -66,10 +69,21 @@ public class PlayerActivity extends Activity {
 
 	private SeekBar progressBar;
 
-	private boolean playing = true;
-
+	private boolean playing = false; //Siempre inicia detenido 
+	private boolean isBind = false;
 	private ServiceBinderHelper binderHelper;
 	private PlayerBinder binder;
+	private ServiceConnection mConnection = new ServiceConnection() {
+		
+        public void onServiceConnected(ComponentName className, IBinder service) {
+        	binder = (PlayerBinder) service;
+        	isBind = true;
+        }
+
+       public void onServiceDisconnected(ComponentName arg0) {
+    	   isBind = false;
+       }
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +116,10 @@ public class PlayerActivity extends Activity {
 		/* Al crear esta instancia se une al servicio esperando obtener un PlayerBinder.
 		 * En la misma creacion de la instancia se inica el servicio en caso de que este
 		 * no haya iniciado ya. */
-		binderHelper = new ServiceBinderHelper(context);
-		binder = binderHelper.getBinder();
+		//binderHelper = new ServiceBinderHelper(context);
+		//binder = binderHelper.getBinder();
+		Intent i = new Intent(context, com.rockodroid.data.service.MediaService.class);
+		context.bindService(i, mConnection, Context.BIND_AUTO_CREATE);
 
 		actualizarInterfazInfo();
 	}
@@ -117,7 +133,9 @@ public class PlayerActivity extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		binderHelper.desconectar();
+		//binderHelper.desconectar();
+		if(isBind)
+			context.unbindService(mConnection);
 	}
 
 	private void actualizarInterfazInfo() {
@@ -148,10 +166,10 @@ public class PlayerActivity extends Activity {
 			ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_on);
 		}
 		//Actualizar el botón de reproducción.
-		if(playing)
-			ivPlay.setImageResource(R.drawable.ic_media_play_selector);
-		else
+		if(playing) //Si está reproduciendo el ícono que debe aparecer es para pausar!
 			ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
+		else
+			ivPlay.setImageResource(R.drawable.ic_media_play_selector);
 	}
 
 	@Override
@@ -184,7 +202,9 @@ public class PlayerActivity extends Activity {
 
 		@Override
 		protected Void doInBackground(Integer... params) {
-			
+			if(binder != null){
+				
+			}
 			return null;
 		}
 
@@ -199,13 +219,21 @@ public class PlayerActivity extends Activity {
 	private final OnClickListener playListener = new OnClickListener() {
 
 		public void onClick(View v) {
+			if(binder == null) {
+				return;
+			}
+			if(!binder.estaIniciado()) {
+				startService(new Intent(context,com.rockodroid.data.service.MediaService.class));
+				return;
+			}
 			if(playing) {
+				//Si está reproduciendo se PAUSA y se pone el ícono para reproducir!
 				binder.pause();
-				ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
+				ivPlay.setImageResource(R.drawable.ic_media_play_selector);
 			}
 			else {
 				binder.play();
-				ivPlay.setImageResource(R.drawable.ic_media_play_selector);
+				ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
 			}
 			playing = !playing;
 		}

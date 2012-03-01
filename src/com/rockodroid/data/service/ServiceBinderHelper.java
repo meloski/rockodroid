@@ -29,13 +29,13 @@ import android.os.IBinder;
  * @author Juan C. Orozco
  */
 public class ServiceBinderHelper {
-	
+
 	private Context context;
 	private PlayerBinder binder;
 	private boolean bind;
 
 	private ServiceConnection mConnection = new ServiceConnection() {
-		
+
         public void onServiceConnected(ComponentName className, IBinder service) {
         	ServiceBinderHelper.this.binder = (PlayerBinder) service;
         	bind = true;
