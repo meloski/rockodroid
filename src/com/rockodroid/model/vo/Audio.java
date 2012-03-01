@@ -65,6 +65,6 @@ public class Audio extends MediaItem {
 
 	public Uri getUri() {
 		return Uri.withAppendedPath(
-				android.provider.MediaStore.Audio.Media.INTERNAL_CONTENT_URI, String.valueOf(getId()));
+				android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, String.valueOf(getId()));
 	}
 }

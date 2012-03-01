@@ -17,6 +17,7 @@
  */
 package com.rockodroid.model.vo;
 
+import android.content.ContentUris;
 import android.net.Uri;
 
 /**
@@ -67,7 +68,7 @@ public class MediaItem {
 	}
 	
 	public Uri getUri() {
-		return Uri.withAppendedPath(
-				android.provider.MediaStore.Audio.Media.INTERNAL_CONTENT_URI, String.valueOf(getId()));
+		return ContentUris.withAppendedId(
+				android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, (long)getId());
 	}
 }
