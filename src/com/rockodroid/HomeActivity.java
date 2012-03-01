@@ -64,7 +64,7 @@ public class HomeActivity extends ActivityGroup {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_home);
-        
+
         TabHost mTabHost;
         TabHost.TabSpec mSpec;
         Intent intent;

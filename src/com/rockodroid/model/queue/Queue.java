@@ -20,9 +20,6 @@ package com.rockodroid.model.queue;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
-import android.content.Intent;
-
 import com.rockodroid.model.vo.MediaItem;
 
 /**
@@ -53,7 +50,7 @@ public class Queue {
 
 	private int current;
 
-	static private Context context;
+	//static private Context context;
 	
 	// Constructor privado garantiza que no se crearán instancias fuera de esta clase.
 	private Queue() {
@@ -224,9 +221,5 @@ public class Queue {
 			this.mEleccion = new ModoAleatorio(elementos.size(), current);
 		else
 			this.mEleccion = new ModoNormal(elementos.size(), current);
-	}
-
-	public void setContext(Context c) {
-		context = c;
 	}
 }
