@@ -68,7 +68,8 @@ public class PlayerActivity extends Activity {
 	private static ImageView ivEstrella;
 
 	private SeekBar progressBar;
- 
+	private UpdateProgress upProgress;
+
 	private boolean isBind = false;  //Saber si el binder fué obtenido
 	private ServiceBinderHelper binderHelper;
 	private PlayerBinder binder;
@@ -78,7 +79,7 @@ public class PlayerActivity extends Activity {
         	binder = (PlayerBinder) service;
         	isBind = true;
         	binder.setObserver(PlayerActivity.this);
-        	actualizarInterfazInfo();
+        	updateInterfaz();
         }
 
        public void onServiceDisconnected(ComponentName arg0) {
@@ -152,9 +153,12 @@ public class PlayerActivity extends Activity {
 			context.unbindService(mConnection);
 			isBind = false;
 		}
+		if(upProgress != null) {
+			upProgress.cancel(true);
+		}
 	}
 
-	public void actualizarInterfazInfo() {
+	private void actualizarInterfazInfo() {
 		// Actualizacion de modo de repeticion
 		if(queue.getModoRepeticion() == Queue.ModoRepeticion.NORMAL) {
 			ivRepetir.setImageResource(R.drawable.ic_mp_repeat_off);
@@ -202,6 +206,15 @@ public class PlayerActivity extends Activity {
 		}
 	}
 
+	public void updateInterfaz() {
+		actualizarInterfazInfo();
+		if(upProgress != null) {
+			upProgress.cancel(true);
+		}
+		upProgress = new UpdateProgress();
+		upProgress.execute();
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflador = getMenuInflater();
@@ -228,15 +241,19 @@ public class PlayerActivity extends Activity {
 
 	/* AsyncTask: Para actualizar el progress bar */
 
-	private class UpdateProgress extends AsyncTask<Integer, Integer, Void> {
+	private class UpdateProgress extends AsyncTask<Void, Integer, Void> {
 
 		@Override
-		protected Void doInBackground(Integer... params) {
+		protected Void doInBackground(Void... params) {
 			if(binder != null){ //ifIsbind
-				int duracion = binder.getDuracion();
+				int duracion = binder.getDuracion() / 1000;
 				int posicion = 0;
+				if(duracion == 0) return null; // No hay Se está reproduciendo
+
+				progressBar.setMax(duracion);
+				publishProgress(posicion);
 				while(posicion <= duracion) {
-					posicion = binder.getPosicion();
+					posicion = binder.getPosicion() / 1000;
 					publishProgress(posicion);
 				}
 			}
@@ -245,7 +262,8 @@ public class PlayerActivity extends Activity {
 
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-			progressBar.setProgress(values[0]);
+			if(!progressBar.isPressed())
+				progressBar.setProgress(values[0]);
 		}
 	}
 
@@ -357,6 +375,13 @@ public class PlayerActivity extends Activity {
 
 		public boolean onTouch(View v, MotionEvent event) {
 			// Actualizar el player (Por medio del binder o por medio de otra Clase[?])
+			if(MotionEvent.ACTION_UP == event.getAction()) {
+				int p = progressBar.getProgress() * 1000;
+				if(isBind) {
+					binder.setPosicion(p);
+					//progressBar.setProgress(p / 1000);
+				}
+			}
 			return false;
 		}
 	};

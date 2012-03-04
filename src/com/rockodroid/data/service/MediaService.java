@@ -194,14 +194,19 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 				mPlayer.pause();
 				mEstado = Estado.pausado;
 			}else {
+				// El llamado a alGanarFocus()  configurará toda la reproducción.
 				if(audioFocusHelper.requerirAudioFocus() && itemActual != null) {
-					int duracion = mPlayer.getDuration()/1000;
+					int duracion = mPlayer.getDuration() / 1000;
 					String duracionStr = String.valueOf(duracion/60) + ":" + String.valueOf(duracion%60); 
+
 					startForeground(NOTIFICATION_ID, notificationHelper.crearNotificacion(
 							"Rockodroid", "Reproduciendo", itemActual.getTitulo() + " - " + duracionStr, 
 							R.drawable.ic_estado_play, PlayerActivity.class, true));
+
 					mPlayer.start();
 					mEstado = Estado.reproduciendo;
+
+					establecerVolumen(1.0f);
 				}
 			}
 		}
@@ -268,13 +273,18 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 * Callback llamado al ganar el foco.
 	 */
 	public void alGanarFoco() {
-
+		// Se inicia la reproducción
+		alternarReproduccion(); //?
 	}
 
 	/**
 	 * Callback llamado al perder el foco indefinidamente.
 	 */
 	public void alPerderFoco() {
+		if(mPlayer != null && mPlayer.isPlaying()) {
+			mPlayer.stop();
+			mEstado = Estado.detenido;
+		}
 		liberarRecursos(true);
 	}
 
@@ -375,7 +385,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		//
 		public void actualizarObserver() {
 			for(PlayerActivity play:observer)
-				play.actualizarInterfazInfo();
+				play.updateInterfaz();
 		}
 	}
 }
