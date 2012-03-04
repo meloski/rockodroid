@@ -17,22 +17,22 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+<!--
    <item
 	    android:id="@+id/menu_queue_guardar_playlist"
 	    android:title="Guardar como playlist"
 	    android:icon="@drawable/ic_lista" />
-
+-->
    <item
 	    android:id="@+id/menu_queue_limpiar"
 	    android:title="Limpiar"
 	    android:icon="@drawable/ic_borrar_lista" />
-
+<!--
    <item
 	    android:id="@+id/menu_queue_ver_player"
 	    android:title="Ver reproductor"
 	    android:icon="@drawable/ic_ver_player" />
-
+-->
    <item
 	    android:id="@+id/menu_queue_configuracion"
 	    android:title="Configuración"

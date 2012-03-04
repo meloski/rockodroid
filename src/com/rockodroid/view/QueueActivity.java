@@ -62,12 +62,6 @@ public class QueueActivity extends ListActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
-		case R.id.menu_queue_guardar_playlist:
-
-			return true;
-		case R.id.menu_queue_ver_player:
-			startActivity(new Intent(this, PlayerActivity.class));
-			return true;
 		case R.id.menu_queue_limpiar:
 			cola.limpiar();
 			//getListView().removeAllViewsInLayout();
