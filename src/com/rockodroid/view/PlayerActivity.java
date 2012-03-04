@@ -21,7 +21,6 @@ import com.rockodroid.HomeActivity;
 import com.rockodroid.R;
 import com.rockodroid.data.service.MediaService.PlayerBinder;
 import com.rockodroid.data.service.ServiceBinderHelper;
-import com.rockodroid.model.listadapter.AudioListAdapter;
 import com.rockodroid.model.queue.ModoNormal;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.vo.Audio;
@@ -79,6 +78,7 @@ public class PlayerActivity extends Activity {
         	binder = (PlayerBinder) service;
         	isBind = true;
         	binder.setObserver(PlayerActivity.this);
+        	actualizarInterfazInfo();
         }
 
        public void onServiceDisconnected(ComponentName arg0) {
@@ -136,8 +136,6 @@ public class PlayerActivity extends Activity {
 				//ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
 			}
 		}
-
-		actualizarInterfazInfo();
 	}
 
 	@Override
@@ -157,6 +155,20 @@ public class PlayerActivity extends Activity {
 	}
 
 	public void actualizarInterfazInfo() {
+		// Actualizacion de modo de repeticion
+		if(queue.getModoRepeticion() == Queue.ModoRepeticion.NORMAL) {
+			ivRepetir.setImageResource(R.drawable.ic_mp_repeat_off);
+		}else if(queue.getModoRepeticion() == Queue.ModoRepeticion.LISTA) {
+			ivRepetir.setImageResource(R.drawable.ic_mp_repeat_all);
+		}else {
+			ivRepetir.setImageResource(R.drawable.ic_mp_repeat_once);
+		}
+		//Actualizacion de modo de eleccion
+		if(queue.getModoEleccion() instanceof ModoNormal) {
+			ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_off);
+		}else {
+			ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_on);
+		}
 		if(isBind) {
 			MediaItem currentMedia = binder.getItemActual();
 			if(currentMedia != null) {
@@ -174,20 +186,6 @@ public class PlayerActivity extends Activity {
 			tvTitulo.setText(" ");
 			tvArtista.setText(" ");
 			tvAlbum.setText(" ");
-		}
-		// Actualizacion de modo de repeticion
-		if(queue.getModoRepeticion() == Queue.ModoRepeticion.NORMAL) {
-			ivRepetir.setImageResource(R.drawable.ic_mp_repeat_off);
-		}else if(queue.getModoRepeticion() == Queue.ModoRepeticion.LISTA) {
-			ivRepetir.setImageResource(R.drawable.ic_mp_repeat_all);
-		}else {
-			ivRepetir.setImageResource(R.drawable.ic_mp_repeat_once);
-		}
-		//Actualizacion de modo de eleccion
-		if(queue.getModoEleccion() instanceof ModoNormal) {
-			ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_off);
-		}else {
-			ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_on);
 		}
 		//Actualizar el botón de reproducción.
 		//Si está vinculado al binder se accede a él

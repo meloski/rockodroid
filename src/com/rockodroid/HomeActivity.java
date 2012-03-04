@@ -18,6 +18,7 @@
 package com.rockodroid;
 
 import com.rockodroid.data.media.MediaStore;
+import com.rockodroid.data.service.MediaService.PlayerBinder;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.vo.Audio;
 import com.rockodroid.model.vo.MediaItem;
@@ -29,9 +30,13 @@ import com.rockodroid.view.PlaylistListActivity;
 import com.rockodroid.view.pref.PreferenciasActivity;
 
 import android.app.ActivityGroup;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -58,11 +63,32 @@ public class HomeActivity extends ActivityGroup {
 	private static ImageView statusIcon;
 	private static ViewGroup statusView;
 
+	private static Context context;
+	private boolean isBind = false;
+	private PlayerBinder binder;
+	private ServiceConnection mConnection = new ServiceConnection() {
+
+        public void onServiceConnected(ComponentName className, IBinder service) {
+        	binder = (PlayerBinder) service;
+        	isBind = true;
+        	configurarReproduciendoAhora();
+        }
+
+       public void onServiceDisconnected(ComponentName arg0) {
+    	   isBind = false;
+       }
+	};
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_home);
+
+        //Bind
+        context = getApplicationContext();
+		Intent i = new Intent(context, com.rockodroid.data.service.MediaService.class);
+		context.bindService(i, mConnection, Context.BIND_AUTO_CREATE);
 
         TabHost mTabHost;
         TabHost.TabSpec mSpec;
@@ -110,7 +136,6 @@ public class HomeActivity extends ActivityGroup {
         statusAudio = (TextView) findViewById(R.id.home_status_audio);
         statusArtista = (TextView) findViewById(R.id.home_status_artista);
         statusIcon = (ImageView) findViewById(R.id.home_status_icon);
-        configurarReproduciendoAhora();
     }
 
     @Override
@@ -118,6 +143,15 @@ public class HomeActivity extends ActivityGroup {
     	super.onResume();
     	configurarReproduciendoAhora();
     }
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(isBind) {
+			context.unbindService(mConnection);
+			isBind = false;
+		}
+	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -144,17 +178,22 @@ public class HomeActivity extends ActivityGroup {
     }
 
     private void configurarReproduciendoAhora() {
-    	MediaItem mi = Queue.getCola().getActual();
-    	if(mi != null) {
-    		statusAudio.setText(mi.getTitulo());
-    		if(mi.getTipo()==MediaItem.TipoMedia.Audio) {
-    			statusArtista.setText(((Audio)mi).getArtista());
-    		}
-    		//Para saber el estado hay que 'preguntarle' al servicio
-    		statusIcon.setImageResource(R.drawable.ic_estado_pause);
-    		statusView.setVisibility(View.VISIBLE);
-    	}else {
-    		statusView.setVisibility(View.INVISIBLE);
+    	if(isBind) {
+    		MediaItem mi = binder.getItemActual();
+    		if(mi != null) {
+        		statusAudio.setText(mi.getTitulo());
+        		if(mi.getTipo()==MediaItem.TipoMedia.Audio) {
+        			statusArtista.setText(((Audio)mi).getArtista());
+        		}
+        		//Para saber el estado hay que 'preguntarle' al servicio
+        		if(binder.isPlaying())
+        			statusIcon.setImageResource(R.drawable.ic_estado_play);
+        		else
+        			statusIcon.setImageResource(R.drawable.ic_estado_pause);
+        		statusView.setVisibility(View.VISIBLE);
+        	}else {
+        		statusView.setVisibility(View.INVISIBLE);
+        	}
     	}
     }
 }
