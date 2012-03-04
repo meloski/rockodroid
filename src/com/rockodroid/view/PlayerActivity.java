@@ -74,7 +74,7 @@ public class PlayerActivity extends Activity {
 	private ServiceBinderHelper binderHelper;
 	private PlayerBinder binder;
 	private ServiceConnection mConnection = new ServiceConnection() {
-		
+
         public void onServiceConnected(ComponentName className, IBinder service) {
         	binder = (PlayerBinder) service;
         	isBind = true;
@@ -131,11 +131,12 @@ public class PlayerActivity extends Activity {
 	}
 
 	@Override
-	protected void onStop() {
-		super.onStop();
-		//binderHelper.desconectar();
-		if(isBind)
+	protected void onDestroy() {
+		super.onDestroy();
+		if(isBind) {
 			context.unbindService(mConnection);
+			isBind = false;
+		}
 	}
 
 	private void actualizarInterfazInfo() {
@@ -202,7 +203,7 @@ public class PlayerActivity extends Activity {
 
 		@Override
 		protected Void doInBackground(Integer... params) {
-			if(binder != null){
+			if(binder != null){ //ifIsbind
 				
 			}
 			return null;
@@ -242,6 +243,12 @@ public class PlayerActivity extends Activity {
 	private final OnClickListener atrasListener = new OnClickListener() {
 
 		public void onClick(View v) {
+			if(binder == null) {
+				return;
+			}
+			if(!binder.estaIniciado()) {
+				startService(new Intent(context,com.rockodroid.data.service.MediaService.class));
+			}
 			if(binder != null)
 				binder.atras();
 			else
@@ -252,6 +259,12 @@ public class PlayerActivity extends Activity {
 	private final OnClickListener adelanteListener = new OnClickListener() {
 
 		public void onClick(View v) {
+			if(binder == null) {
+				return;
+			}
+			if(!binder.estaIniciado()) {
+				startService(new Intent(context,com.rockodroid.data.service.MediaService.class));
+			}
 			if(binder != null)
 				binder.siguiente();
 			else

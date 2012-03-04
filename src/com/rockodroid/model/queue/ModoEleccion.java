@@ -44,4 +44,10 @@ public interface ModoEleccion {
 	 * Establece el actual elemento. 
 	 */
 	void setActual(int actual);
+
+	/** Regresa el iterador hacia la primera posicion*/
+	void reiniciar();
+
+	/** Avanza hasta el ultimo elemento */
+	void avanzarHastaUltimo();
 }

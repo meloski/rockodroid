@@ -84,7 +84,7 @@ public class ModoAleatorio implements ModoEleccion {
 	 * Si el actual elemento es el primero retorna -1.
 	 */
 	public int getAnterior() {
-		if(actual -1 == 0) return -1;
+		if(actual -1 < 0) return -1;
 		return elementos.get(--actual);
 	}
 
@@ -103,5 +103,14 @@ public class ModoAleatorio implements ModoEleccion {
 		int i = elementos.indexOf(actual);
 		if(i > -1)
 			actual = i;
+	}
+
+	public void reiniciar() {
+		this.actual = 0;
+		
+	}
+
+	public void avanzarHastaUltimo() {
+		actual = elementos.size() - 1;
 	}
 }

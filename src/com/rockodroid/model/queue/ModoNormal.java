@@ -64,4 +64,13 @@ public class ModoNormal implements ModoEleccion {
 	public void setActual(int actual) {
 		this.actual = actual;
 	}
+
+	public void reiniciar() {
+		this.actual = 0;
+		
+	}
+
+	public void avanzarHastaUltimo() {
+		actual = cantidad -1;
+	}
 }

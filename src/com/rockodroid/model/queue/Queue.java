@@ -144,7 +144,26 @@ public class Queue {
 	 * @return MediaItem - El elemento siguiente en la cola.
 	 */
 	public MediaItem getSiguiente() {
-		return null;
+		if(mRepet == ModoRepeticion.ITEM) {
+			//Repeticion por items, se retorna el mismo item.
+			return getActual();
+		}
+		int sig = mEleccion.getSiguiente(); // El siguiente depende del modo de elección
+		if(sig == -1){
+			// El actual es el último.
+			if(mRepet == ModoRepeticion.LISTA){
+				//Si está activada la opción repetir por lista, se vuelve al inicio.
+				//Se reinicia el modo de elección y se obtiene el actual.
+				mEleccion.reiniciar();
+				current = mEleccion.getActual();
+				return getActual();
+			}
+			//Se acabó la lista y no está en modo de repeticion. así que no hay siguiente
+			return null;
+		}
+		//Tenemos un sigueinte
+		current = sig;
+		return getActual();
 	}
 
 	/**
@@ -154,7 +173,24 @@ public class Queue {
 	 * @return MediaItem - El anterior elemento en la cola.
 	 */
 	public MediaItem getAnterior() {
-		return null;
+		if(mRepet == ModoRepeticion.ITEM) {
+			//Repeticion por items, se retorna el mismo item.
+			return getActual();
+		}
+		int ant = mEleccion.getAnterior(); //El modo de eleccion conoce el anterior
+		if(ant == -1){
+			// El actual es el primero.
+			if(mRepet == ModoRepeticion.LISTA){
+				//Si está activada la opción repetir por lista vamos al final.
+				mEleccion.avanzarHastaUltimo(); // Vamos al final de la lista.
+				current = mEleccion.getActual();
+				return getActual();
+			}
+			//No está activada la opcion de repetir lista y este es el primero, no hay anterior.
+			return null;
+		}
+		current = ant; // Ya calculamos el anterior, ahora actualizamos current
+		return getActual();
 	}
 
 	/**
