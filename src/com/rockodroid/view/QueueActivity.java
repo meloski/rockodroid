@@ -18,13 +18,18 @@
 package com.rockodroid.view;
 
 import com.rockodroid.R;
+import com.rockodroid.data.service.MediaService.PlayerBinder;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.queue.QueueAdapter;
 import com.rockodroid.view.pref.PreferenciasActivity;
 
 import android.app.ListActivity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +46,21 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 public class QueueActivity extends ListActivity {
 
 	private static Queue cola;
+	private Context context;
+
+	private boolean isBind = false;
+	private PlayerBinder binder;
+	private ServiceConnection mConnection = new ServiceConnection() {
+
+        public void onServiceConnected(ComponentName className, IBinder service) {
+        	binder = (PlayerBinder) service;
+        	isBind = true;
+        }
+
+       public void onServiceDisconnected(ComponentName arg0) {
+    	   isBind = false;
+       }
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +70,19 @@ public class QueueActivity extends ListActivity {
 		getListView().setFastScrollEnabled(true);
 		setListAdapter(new QueueAdapter(getApplicationContext()));
 		registerForContextMenu(getListView());
+
+		context = getApplicationContext();
+		Intent i = new Intent(context, com.rockodroid.data.service.MediaService.class);
+		context.bindService(i, mConnection, Context.BIND_AUTO_CREATE);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(isBind) {
+			context.unbindService(mConnection);
+			isBind = false;
+		}
 	}
 
 	@Override
@@ -90,8 +123,8 @@ public class QueueActivity extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		case R.id.menu_c_queue_reproducir:
-			cola.setActual(info.position);
-			// notificar al service
+			cola.setActual(info.position); // Se actualiza la cola
+			binder.reproducirNuevo();
 			return true;
 		case R.id.menu_c_queu_eliminar:
 			cola.eliminar(info.position);
@@ -108,6 +141,6 @@ public class QueueActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		cola.setActual(position);
-		// Notificar al service
+		binder.reproducirNuevo();
 	}
 }

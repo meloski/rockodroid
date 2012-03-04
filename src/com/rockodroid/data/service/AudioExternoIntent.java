@@ -42,8 +42,10 @@ public class AudioExternoIntent extends android.content.BroadcastReceiver {
 			/* Revisar el archivo de preferencias 
 			 * Si está marcada la opción "Detener al desconectar"
 			 * entonces se debe detener la reproducción */
-			if(prefHelper.getDetenerAudioPref())
-				binder.pause();
+			if(prefHelper.getDetenerAudioPref()) {
+				if(binder.isPlaying())
+					binder.pause();
+			}
 		}
 	}
 }

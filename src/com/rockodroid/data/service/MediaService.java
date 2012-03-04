@@ -38,7 +38,6 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.widget.ArrayAdapter;
 
 /**
  * Servicio encargado de la reproducción de los archivos
@@ -155,6 +154,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 			mEstado = Estado.inicilizado;
 			mPlayer.prepareAsync();
 		}else {
+			// Para que limpie la interfaz si no se está reproduciendo nada.
 			binder.actualizarObserver();
 		}
 	}
@@ -327,6 +327,12 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 			retroceder();
 		}
 
+		public void reproducirNuevo() {
+			iniciarPlayer();
+			itemActual = cola.getActual();
+			configurarMedia();
+		}
+
 		public boolean isPlaying() {
 			return (mPlayer != null && mPlayer.isPlaying());
 		}
@@ -338,7 +344,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		public int getPosicion() {
 			return (mPlayer != null)? mPlayer.getCurrentPosition(): 0;
 		}
-		
+
 		public void setPosicion(int pos) {
 			if(mPlayer != null)
 				mPlayer.seekTo(pos);

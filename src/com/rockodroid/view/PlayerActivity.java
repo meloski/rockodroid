@@ -21,6 +21,7 @@ import com.rockodroid.HomeActivity;
 import com.rockodroid.R;
 import com.rockodroid.data.service.MediaService.PlayerBinder;
 import com.rockodroid.data.service.ServiceBinderHelper;
+import com.rockodroid.model.listadapter.AudioListAdapter;
 import com.rockodroid.model.queue.ModoNormal;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.vo.Audio;
@@ -124,7 +125,15 @@ public class PlayerActivity extends Activity {
 
 		// Por ahora no se usa la estrella (En una version futura tal vez!)
 		ivEstrella.setVisibility(View.INVISIBLE);
-		
+
+		Bundle bundle = getIntent().getExtras();
+		if(bundle != null) {
+			String accion = bundle.getString("accion");
+			if(accion.equals("PLAY")) {
+				//PLAY
+			}
+		}
+
 		actualizarInterfazInfo();
 	}
 
