@@ -76,7 +76,8 @@ public class ModoAleatorio implements ModoEleccion {
 	 */
 	public int getSiguiente() {
 		if(actual == elementos.size() - 1) return-1;
-		return elementos.get(++actual);
+		actual++;
+		return elementos.get(actual);
 	}
 
 	/**
@@ -85,7 +86,8 @@ public class ModoAleatorio implements ModoEleccion {
 	 */
 	public int getAnterior() {
 		if(actual -1 < 0) return -1;
-		return elementos.get(--actual);
+		actual--;
+		return elementos.get(actual);
 	}
 
 	/**

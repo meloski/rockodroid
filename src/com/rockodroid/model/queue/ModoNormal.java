@@ -38,7 +38,8 @@ public class ModoNormal implements ModoEleccion {
 	 * Retorna la posicion del siguiente elemento.
 	 */
 	public int getSiguiente() {
-		if(actual++ == cantidad) actual = -1;
+		actual++;
+		if(actual == cantidad) actual = -1;
 		return actual;
 	}
 
@@ -46,7 +47,8 @@ public class ModoNormal implements ModoEleccion {
 	 * Retorna la posicion del anterior elemento.
 	 */
 	public int getAnterior() {
-		if(actual-- < 0) actual = -1; 
+		actual--;
+		if(actual < 0) actual = -1;
 		return actual;
 	}
 

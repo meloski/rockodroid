@@ -68,9 +68,8 @@ public class PlayerActivity extends Activity {
 	private static ImageView ivEstrella;
 
 	private SeekBar progressBar;
-
-	private boolean playing = false; //Siempre inicia detenido 
-	private boolean isBind = false;
+ 
+	private boolean isBind = false;  //Saber si el binder fué obtenido
 	private ServiceBinderHelper binderHelper;
 	private PlayerBinder binder;
 	private ServiceConnection mConnection = new ServiceConnection() {
@@ -78,6 +77,7 @@ public class PlayerActivity extends Activity {
         public void onServiceConnected(ComponentName className, IBinder service) {
         	binder = (PlayerBinder) service;
         	isBind = true;
+        	binder.setObserver(PlayerActivity.this);
         }
 
        public void onServiceDisconnected(ComponentName arg0) {
@@ -92,6 +92,15 @@ public class PlayerActivity extends Activity {
 
 		context = getApplicationContext();
 		queue = Queue.getCola();
+
+		/* Al crear esta instancia se une al servicio esperando obtener un PlayerBinder.
+		 * En la misma creacion de la instancia se inica el servicio en caso de que este
+		 * no haya iniciado ya. */
+		//binderHelper = new ServiceBinderHelper(context);
+		//binder = binderHelper.getBinder();
+		Intent i = new Intent(context, com.rockodroid.data.service.MediaService.class);
+		context.bindService(i, mConnection, Context.BIND_AUTO_CREATE);
+
 		tvTitulo = (TextView) findViewById(R.id.mp_info_audio);
 		tvArtista = (TextView) findViewById(R.id.mp_info_artista);
 		tvAlbum = (TextView) findViewById(R.id.mp_info_album);
@@ -113,14 +122,9 @@ public class PlayerActivity extends Activity {
 		ivEstrella.setOnClickListener(estrellaListener);
 		progressBar.setOnTouchListener(onTouchProgress);
 
-		/* Al crear esta instancia se une al servicio esperando obtener un PlayerBinder.
-		 * En la misma creacion de la instancia se inica el servicio en caso de que este
-		 * no haya iniciado ya. */
-		//binderHelper = new ServiceBinderHelper(context);
-		//binder = binderHelper.getBinder();
-		Intent i = new Intent(context, com.rockodroid.data.service.MediaService.class);
-		context.bindService(i, mConnection, Context.BIND_AUTO_CREATE);
-
+		// Por ahora no se usa la estrella (En una version futura tal vez!)
+		ivEstrella.setVisibility(View.INVISIBLE);
+		
 		actualizarInterfazInfo();
 	}
 
@@ -134,18 +138,25 @@ public class PlayerActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		if(isBind) {
+			binder.rmObserver(this);
 			context.unbindService(mConnection);
 			isBind = false;
 		}
 	}
 
-	private void actualizarInterfazInfo() {
-		MediaItem currentMedia = queue.getActual();
-		if(currentMedia != null) {
-			tvTitulo.setText(currentMedia.getTitulo());
-			if(currentMedia instanceof Audio) {
-				tvAlbum.setText(((Audio)currentMedia).getAlbum());
-				tvArtista.setText(((Audio)currentMedia).getArtista());
+	public void actualizarInterfazInfo() {
+		if(isBind) {
+			MediaItem currentMedia = binder.getItemActual();
+			if(currentMedia != null) {
+				tvTitulo.setText(currentMedia.getTitulo());
+				if(currentMedia instanceof Audio) {
+					tvAlbum.setText(((Audio)currentMedia).getAlbum());
+					tvArtista.setText(((Audio)currentMedia).getArtista());
+				}
+			}else {
+				tvTitulo.setText(" ");
+				tvArtista.setText(" ");
+				tvAlbum.setText(" ");
 			}
 		}else {
 			tvTitulo.setText(" ");
@@ -167,10 +178,18 @@ public class PlayerActivity extends Activity {
 			ivAleatorio.setImageResource(R.drawable.ic_mp_shuffle_on);
 		}
 		//Actualizar el botón de reproducción.
-		if(playing) //Si está reproduciendo el ícono que debe aparecer es para pausar!
-			ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
-		else
+		//Si está vinculado al binder se accede a él
+		if(isBind) {
+			if(binder.isPlaying()) {
+				//Si está reproduciendo el ícono que debe aparecer es para pausar!
+				ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
+			}else {
+				ivPlay.setImageResource(R.drawable.ic_media_play_selector);
+			}
+		}else {
+			// Si no tiene el binder, se asume que no se está reproduciendo.
 			ivPlay.setImageResource(R.drawable.ic_media_play_selector);
+		}
 	}
 
 	@Override
@@ -204,7 +223,12 @@ public class PlayerActivity extends Activity {
 		@Override
 		protected Void doInBackground(Integer... params) {
 			if(binder != null){ //ifIsbind
-				
+				int duracion = binder.getDuracion();
+				int posicion = 0;
+				while(posicion <= duracion) {
+					posicion = binder.getPosicion();
+					publishProgress(posicion);
+				}
 			}
 			return null;
 		}
@@ -225,9 +249,10 @@ public class PlayerActivity extends Activity {
 			}
 			if(!binder.estaIniciado()) {
 				startService(new Intent(context,com.rockodroid.data.service.MediaService.class));
+				ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
 				return;
 			}
-			if(playing) {
+			if(binder.isPlaying()) {
 				//Si está reproduciendo se PAUSA y se pone el ícono para reproducir!
 				binder.pause();
 				ivPlay.setImageResource(R.drawable.ic_media_play_selector);
@@ -236,7 +261,6 @@ public class PlayerActivity extends Activity {
 				binder.play();
 				ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
 			}
-			playing = !playing;
 		}
 	};
 
@@ -249,8 +273,10 @@ public class PlayerActivity extends Activity {
 			if(!binder.estaIniciado()) {
 				startService(new Intent(context,com.rockodroid.data.service.MediaService.class));
 			}
-			if(binder != null)
+			if(binder != null) {
 				binder.atras();
+				//actualizarInterfazInfo();
+			}
 			else
 				binder = binderHelper.getBinder();
 		}
@@ -265,8 +291,10 @@ public class PlayerActivity extends Activity {
 			if(!binder.estaIniciado()) {
 				startService(new Intent(context,com.rockodroid.data.service.MediaService.class));
 			}
-			if(binder != null)
+			if(binder != null) {
 				binder.siguiente();
+				//actualizarInterfazInfo();
+			}
 			else
 				binder = binderHelper.getBinder();
 		}

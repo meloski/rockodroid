@@ -112,9 +112,7 @@ public class Queue {
 	public void eliminar(int i) {
 		elementos.remove(i);
 		if(current == i) {
-			if(i != 0) {
-				current--;
-			}
+			current--;
 		}
 		configurarModoEleccion(null);
 	}

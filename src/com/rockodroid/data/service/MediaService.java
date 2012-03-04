@@ -17,6 +17,9 @@
  */
 package com.rockodroid.data.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.rockodroid.R;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.vo.MediaItem;
@@ -35,6 +38,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.widget.ArrayAdapter;
 
 /**
  * Servicio encargado de la reproducción de los archivos
@@ -80,10 +84,10 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		//int accion = Integer.valueOf(intent.getAction());
 		//if(accion == PlAY) {
 			itemActual = cola.getActual();
-			if(itemActual != null) {
+			//if(itemActual != null) {
 				iniciarPlayer();
 				configurarMedia();
-			}
+			//}
 		//}
 		return START_NOT_STICKY;
 	}
@@ -141,14 +145,18 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	}
 
 	private void configurarMedia() {
-		try {
-			Uri mediaUri = itemActual.getUri();
-			mPlayer.setDataSource(getApplicationContext(), mediaUri);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(itemActual != null) {
+			try {
+				Uri mediaUri = itemActual.getUri();
+				mPlayer.setDataSource(getApplicationContext(), mediaUri);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			mEstado = Estado.inicilizado;
+			mPlayer.prepareAsync();
+		}else {
+			binder.actualizarObserver();
 		}
-		mEstado = Estado.inicilizado;
-		mPlayer.prepareAsync();
 	}
 
 	/**
@@ -186,7 +194,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 				mPlayer.pause();
 				mEstado = Estado.pausado;
 			}else {
-				if(audioFocusHelper.requerirAudioFocus()) {
+				if(audioFocusHelper.requerirAudioFocus() && itemActual != null) {
 					int duracion = mPlayer.getDuration()/1000;
 					String duracionStr = String.valueOf(duracion/60) + ":" + String.valueOf(duracion%60); 
 					startForeground(NOTIFICATION_ID, notificationHelper.crearNotificacion(
@@ -239,6 +247,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	public void onPrepared(MediaPlayer mp) {
 		mEstado = Estado.listo;
 		alternarReproduccion();
+		binder.actualizarObserver();
 	}
 
 	/**
@@ -294,8 +303,10 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 	 */
 	public class PlayerBinder extends Binder {
 
+		List<PlayerActivity> observer = null;
+
 		public PlayerBinder() {
-			
+			observer = new ArrayList<PlayerActivity>();
 		}
 
 		public void play() {
@@ -340,6 +351,25 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 
 		public boolean estaIniciado() {
 			return (mPlayer != null);
+		}
+
+		public MediaItem getItemActual() {
+			return itemActual;
+		}
+
+		// Observer para la interfaz.
+		public void setObserver(PlayerActivity obs) {
+			observer.add(obs);
+		}
+
+		public void rmObserver(PlayerActivity pla) {
+			observer.remove(pla);
+		}
+
+		//
+		public void actualizarObserver() {
+			for(PlayerActivity play:observer)
+				play.actualizarInterfazInfo();
 		}
 	}
 }
