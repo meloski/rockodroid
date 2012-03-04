@@ -131,6 +131,9 @@ public class PlayerActivity extends Activity {
 			String accion = bundle.getString("accion");
 			if(accion.equals("PLAY")) {
 				//PLAY
+				//iniciar servicio. El inicia la reproduccion automáticamente.
+				startService(new Intent(context,com.rockodroid.data.service.MediaService.class));
+				//ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
 			}
 		}
 

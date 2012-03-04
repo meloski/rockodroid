@@ -25,7 +25,7 @@
     <item 
         android:id="@+id/menu_context_play"
         android:title="Reproducir"/>
-    
+<!--    
     <group
         android:id="@+id/menu_group_playlist"
         android:visible="false" >
@@ -38,7 +38,7 @@
         	android:id="@+id/menu_context_rename" 
         	android:title="Renombrar"/>
 	</group>
-
+-->
     <item 
         android:id="@+id/menu_context_ver_cola"
         android:title="Ver Cola"/>

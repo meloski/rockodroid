@@ -63,7 +63,7 @@ public class PlaylistListActivity extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflador = getMenuInflater();
 		inflador.inflate(R.menu.menu_contextual_item, menu);
-		menu.setGroupVisible(R.id.menu_group_playlist, true);
+		//menu.setGroupVisible(R.id.menu_group_playlist, true);
 		MenuItem agregar = menu.findItem(R.id.menu_context_enqueue);
 		agregar.setVisible(false);
 	}
@@ -76,13 +76,9 @@ public class PlaylistListActivity extends ListActivity {
 			cola.limpiar();
 			PlayList pl = (PlayList)getListAdapter().getItem(info.position);
 			for(Audio a: mStore.buscarAudioDePlayList(String.valueOf(pl.getId()))) cola.agregar(a);
-			startActivity(new Intent(this, PlayerActivity.class));
-			return true;
-		case R.id.menu_context_rename:
-			
-			return true;
-		case R.id.menu_context_delete:
-			
+			Intent i = new Intent(this, PlayerActivity.class);
+			i.putExtra("accion", "PLAY");
+			startActivity(i);
 			return true;
 		case R.id.menu_context_ver_cola:
 			startActivity(new Intent(this, QueueActivity.class));

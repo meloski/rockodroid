@@ -73,7 +73,9 @@ public class AlbumListActivity extends ListActivity {
 		case R.id.menu_context_play:
 			cola.limpiar();
 			agregarACola(item);
-			startActivity(new Intent(this, PlayerActivity.class));
+			Intent i = new Intent(this, PlayerActivity.class);
+			i.putExtra("accion", "PLAY");
+			startActivity(i);
 			return true;
 		case R.id.menu_context_enqueue:
 			agregarACola(item);

@@ -71,7 +71,9 @@ public class AudioListActivity extends ListActivity{
 		case R.id.menu_context_play:
 			cola.limpiar();
 			agregarACola(item);
-			startActivity(new Intent(this, PlayerActivity.class));
+			Intent i = new Intent(this, PlayerActivity.class);
+			i.putExtra("accion", "PLAY");
+			startActivity(i);
 			return true;
 		case R.id.menu_context_enqueue:
 			agregarACola(item);
@@ -95,6 +97,8 @@ public class AudioListActivity extends ListActivity{
 		super.onListItemClick(l, v, position, id);
 		cola.limpiar();
 		cola.agregar((Audio)getListAdapter().getItem(position));
-		startActivity(new Intent(this, PlayerActivity.class));
+		Intent i = new Intent(this, PlayerActivity.class);
+		i.putExtra("accion", "PLAY");
+		startActivity(i);
 	}
 }
