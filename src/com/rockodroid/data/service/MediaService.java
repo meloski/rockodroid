@@ -154,6 +154,7 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 			mEstado = Estado.inicilizado;
 			mPlayer.prepareAsync();
 		}else {
+			liberarRecursos(true);
 			// Para que limpie la interfaz si no se está reproduciendo nada.
 			binder.actualizarObserver();
 		}
@@ -348,11 +349,11 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		}
 
 		public int getDuracion() {
-			return (mPlayer != null)? mPlayer.getDuration(): 0;
+			return (mPlayer != null && mPlayer.isPlaying())? mPlayer.getDuration(): 0;
 		}
 
 		public int getPosicion() {
-			return (mPlayer != null)? mPlayer.getCurrentPosition(): 0;
+			return (mPlayer != null && mPlayer.isPlaying())? mPlayer.getCurrentPosition(): 0;
 		}
 
 		public void setPosicion(int pos) {

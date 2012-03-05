@@ -282,10 +282,15 @@ public class PlayerActivity extends Activity {
 			}
 			if(binder.isPlaying()) {
 				//Si está reproduciendo se PAUSA y se pone el ícono para reproducir!
+				if(upProgress != null) {
+					upProgress.cancel(true);
+				}
 				binder.pause();
 				ivPlay.setImageResource(R.drawable.ic_media_play_selector);
 			}
 			else {
+				upProgress = new UpdateProgress();
+				upProgress.execute();
 				binder.play();
 				ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
 			}
