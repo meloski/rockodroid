@@ -24,6 +24,7 @@ import com.rockodroid.model.vo.Artista;
 
 import com.rockodroid.R;
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ public class ArtistaListAdapter extends BaseExpandableListAdapter {
 	/* Layouts usados para  inflar nuevas vistas. */
 	private static final int layoutArtista = R.layout.layout_artistalist_item;
 	private static final int layoutAlbumArtista = R.layout.layout_albumartistalist_item;
+	private static float density;
 
 	private final LayoutInflater inflador;
 	private ArrayList<Artista> artistas;
@@ -52,6 +54,7 @@ public class ArtistaListAdapter extends BaseExpandableListAdapter {
 		super();
 		inflador = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		artistas = datos;
+		density = context.getResources().getDisplayMetrics().density;
 	}
 
 	public ArtistaListAdapter(Context context) {
@@ -95,7 +98,7 @@ public class ArtistaListAdapter extends BaseExpandableListAdapter {
 			holder.tituloAlbum = (TextView) convertView.findViewById(R.id.album_title);
 			holder.artAlbum = (ImageView) convertView.findViewById(R.id.album_art);
 			holder.numCanciones = (TextView) convertView.findViewById(R.id.album_n_canciones);
-			convertView.setPadding(12, 0, 0, 0);
+			convertView.setPadding((int)(20 * density), 0, 0, 0);
 			convertView.setTag(holder);
 		}else {
 			holder = (ViewHolderAlbum) convertView.getTag();
