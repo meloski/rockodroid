@@ -169,6 +169,7 @@ public class HomeActivity extends ActivityGroup {
     		MediaStore store = new MediaStore(getApplicationContext());
     		for(MediaItem m: store.buscarAudio()) cola.agregar(m);
     		cola.setAleatorio(true);
+    		return true;
     	case R.id.menu_home_conf:
     		startActivity(new Intent(this, PreferenciasActivity.class));
     		return true;
