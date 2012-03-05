@@ -46,7 +46,7 @@ import android.os.PowerManager;
  * Este es uno de los componentes principales de la aplicación.
  * 
  * @author Juan C. Orozco
- *
+ * @author Roberto R. De La Parra
  */
 public class MediaService extends Service implements OnPreparedListener, OnErrorListener,
 				AudioFocusCambiable, OnCompletionListener{
@@ -68,7 +68,6 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 
 	private NotificationHelper notificationHelper;
 	private AudioFocusHelper audioFocusHelper;
-	private AudioExternoIntent audioExternoHelper;
 
 	private static Queue cola;
 	private PlayerBinder binder = new PlayerBinder();
@@ -101,7 +100,6 @@ public class MediaService extends Service implements OnPreparedListener, OnError
 		//binder = new PlayerBinder();
 		notificationHelper = new NotificationHelper(c);
 		audioFocusHelper = new AudioFocusHelper(c, this);
-		audioExternoHelper = new AudioExternoIntent(c, binder);
 		cola = Queue.getCola();
 		super.onCreate();
 	}

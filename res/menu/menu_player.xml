@@ -27,10 +27,10 @@
 	    android:id="@+id/menu_player_cola"
 	    android:title="Ver cola"
 	    android:icon="@drawable/ic_ver_cola" />
-
+<!--
     <item 
 	    android:id="@+id/menu_player_configuracion"
 	    android:title="Configuración"
 	    android:icon="@drawable/ic_configuracion" />
-
+-->
 </menu>

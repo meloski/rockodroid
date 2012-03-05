@@ -40,6 +40,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  * almacenados en el dispositivo.
  * 
  * @author Juan C. Orozco
+ * @author Roberto R. De La Parra
  */
 public class AudioListActivity extends ListActivity{
 

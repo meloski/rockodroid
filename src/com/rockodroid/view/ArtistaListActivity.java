@@ -45,6 +45,7 @@ import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
  * expandible de forma que rápidamente pueda acceder a los albumes de cada artista.
  * 
  * @author Juan C. Orozco
+ * @author Roberto R. De La Parra
  */
 public class ArtistaListActivity extends ExpandableListActivity {
 

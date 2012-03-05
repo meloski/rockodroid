@@ -27,20 +27,15 @@
 	    android:id="@+id/menu_home_buscar"
 	    android:title="Buscar"
 	    android:icon="@drawable/ic_buscar" />
-
+-->
 	<item 
 	    android:id="@+id/menu_home_ver_cola"
 	    android:title="Ver Cola"
 	    android:icon="@drawable/ic_ver_cola" />
-
-	<item
-	    android:id="@+id/menu_home_player"
-	    android:title="Ver reproductor"
-	    android:icon="@drawable/ic_ver_player" />
--->
+<!--
 	<item
 	    android:id="@+id/menu_home_conf"
 	    android:title="Configuración"
 	    android:icon="@drawable/ic_configuracion" />
-
+-->
 </menu>

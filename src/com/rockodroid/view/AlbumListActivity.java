@@ -41,6 +41,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  * en el almacenamiento primario "external"
  * @see AlbumListAdapter
  * @author Juan C. Orozco
+ * @author Roberto R. De La Parra
  */
 public class AlbumListActivity extends ListActivity {
 

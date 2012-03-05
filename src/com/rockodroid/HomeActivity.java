@@ -27,7 +27,7 @@ import com.rockodroid.view.ArtistaListActivity;
 import com.rockodroid.view.AudioListActivity;
 import com.rockodroid.view.PlayerActivity;
 import com.rockodroid.view.PlaylistListActivity;
-import com.rockodroid.view.pref.PreferenciasActivity;
+import com.rockodroid.view.QueueActivity;
 
 import android.app.ActivityGroup;
 import android.content.ComponentName;
@@ -169,9 +169,12 @@ public class HomeActivity extends ActivityGroup {
     		MediaStore store = new MediaStore(getApplicationContext());
     		for(MediaItem m: store.buscarAudio()) cola.agregar(m);
     		cola.setAleatorio(true);
+    		Intent i = new Intent(this, PlayerActivity.class);
+			i.putExtra("accion", "PLAY");
+			startActivity(i);
     		return true;
-    	case R.id.menu_home_conf:
-    		startActivity(new Intent(this, PreferenciasActivity.class));
+    	case R.id.menu_home_ver_cola:
+    		startActivity(new Intent(this, QueueActivity.class));
     		return true;
     	default:
     		return super.onOptionsItemSelected(item);

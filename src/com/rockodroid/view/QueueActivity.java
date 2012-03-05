@@ -21,7 +21,6 @@ import com.rockodroid.R;
 import com.rockodroid.data.service.MediaService.PlayerBinder;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.queue.QueueAdapter;
-import com.rockodroid.view.pref.PreferenciasActivity;
 
 import android.app.ListActivity;
 import android.content.ComponentName;
@@ -42,6 +41,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 /**
  * Actividad encargada de mostrar la lista de items en la cola.
  * @author Juan C. Orozco
+ * @author Roberto R. De La Parra
  */
 public class QueueActivity extends ListActivity {
 
@@ -101,9 +101,6 @@ public class QueueActivity extends ListActivity {
 			//getListView().invalidate();
 			((QueueAdapter)getListAdapter()).clear();
 			((QueueAdapter)getListAdapter()).notifyDataSetChanged();
-			return true;
-		case R.id.menu_queue_configuracion:
-			startActivity(new Intent(this, PreferenciasActivity.class));
 			return true;
 			default:
 				return super.onOptionsItemSelected(item);

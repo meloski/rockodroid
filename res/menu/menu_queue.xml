@@ -29,13 +29,8 @@
 	    android:icon="@drawable/ic_borrar_lista" />
 <!--
    <item
-	    android:id="@+id/menu_queue_ver_player"
-	    android:title="Ver reproductor"
-	    android:icon="@drawable/ic_ver_player" />
--->
-   <item
 	    android:id="@+id/menu_queue_configuracion"
 	    android:title="Configuración"
 	    android:icon="@drawable/ic_configuracion" />
-
+-->
 </menu>

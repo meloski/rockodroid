@@ -24,7 +24,6 @@ import com.rockodroid.model.vo.Artista;
 
 import com.rockodroid.R;
 import android.content.Context;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

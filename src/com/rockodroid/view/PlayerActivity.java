@@ -25,7 +25,6 @@ import com.rockodroid.model.queue.ModoNormal;
 import com.rockodroid.model.queue.Queue;
 import com.rockodroid.model.vo.Audio;
 import com.rockodroid.model.vo.MediaItem;
-import com.rockodroid.view.pref.PreferenciasActivity;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -49,6 +48,7 @@ import android.widget.TextView;
 /**
  * Actividad encargada de mostrar la interfaz del reproductor.
  * @author Juan C. Orozco
+ * @author Roberto R. De La Parra
  */
 public class PlayerActivity extends Activity {
 
@@ -229,9 +229,6 @@ public class PlayerActivity extends Activity {
 			return true;
 		case R.id.menu_player_cola:
 			startActivity(new Intent(this, QueueActivity.class));
-			return true;
-		case R.id.menu_player_configuracion:
-			startActivity(new Intent(this, PreferenciasActivity.class));
 			return true;
 			default:
 				return super.onOptionsItemSelected(item);
