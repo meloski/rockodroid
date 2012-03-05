@@ -134,7 +134,6 @@ public class PlayerActivity extends Activity {
 				//PLAY
 				//iniciar servicio. El inicia la reproduccion automáticamente.
 				startService(new Intent(context,com.rockodroid.data.service.MediaService.class));
-				//ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
 			}
 		}
 	}
@@ -142,7 +141,7 @@ public class PlayerActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		actualizarInterfazInfo();
+		updateInterfaz();
 	}
 
 	@Override
@@ -247,17 +246,18 @@ public class PlayerActivity extends Activity {
 		protected Void doInBackground(Void... params) {
 			if(binder != null){ //ifIsbind
 				int duracion = binder.getDuracion() / 1000;
+				if(duracion == 0) return null; // No hay item cargado en el reproductor.
+				progressBar.setMax(duracion);  // Longitud máxima de la barra es la duración en segundos.
 				int posicion = 0;
-				if(duracion == 0) return null; // No hay Se está reproduciendo
-
-				progressBar.setMax(duracion);
-				publishProgress(posicion);
-				while(posicion <= duracion) {
+				do {
+					try {
+						Thread.sleep((long)1000);
+					} catch (InterruptedException e1) { /*No pudo esperar, No importa!*/ }
 					posicion = binder.getPosicion() / 1000;
 					publishProgress(posicion);
-				}
+				}while(posicion <= duracion);
 			}
-			return null;
+			return null; // Siempre retorna null, pues no se espera que retorne nada después de la ejecución.
 		}
 
 		@Override
@@ -281,18 +281,23 @@ public class PlayerActivity extends Activity {
 				return;
 			}
 			if(binder.isPlaying()) {
-				//Si está reproduciendo se PAUSA y se pone el ícono para reproducir!
+				// Se cancela el AsyncTask, está en pause, no es necesario usar este recurso!
 				if(upProgress != null) {
 					upProgress.cancel(true);
 				}
+				//Si está reproduciendo se PAUSA y se pone el ícono para reproducir!
 				binder.pause();
 				ivPlay.setImageResource(R.drawable.ic_media_play_selector);
 			}
 			else {
-				upProgress = new UpdateProgress();
-				upProgress.execute();
 				binder.play();
 				ivPlay.setImageResource(R.drawable.ic_media_pause_selector);
+				// Si se le da play se vuelve a crear el AsyncTask si no está creado. Se necesita actualiza la barra!
+				if(upProgress != null) {
+					upProgress.cancel(true);
+				}
+				upProgress = new UpdateProgress();
+				upProgress.execute();
 			}
 		}
 	};
@@ -308,10 +313,9 @@ public class PlayerActivity extends Activity {
 			}
 			if(binder != null) {
 				binder.atras();
-				//actualizarInterfazInfo();
-			}
-			else
+			}else {
 				binder = binderHelper.getBinder();
+			}
 		}
 	};
 
@@ -326,10 +330,9 @@ public class PlayerActivity extends Activity {
 			}
 			if(binder != null) {
 				binder.siguiente();
-				//actualizarInterfazInfo();
-			}
-			else
+			} else {
 				binder = binderHelper.getBinder();
+			}
 		}
 	};
 
