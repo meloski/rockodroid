@@ -47,6 +47,9 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+
+
+
 /**
  * Esta clase permite seleccionar la categoría por la cual buscar el
  * contenido multimedia del dispositivo. Cada Tab lanza una actividad
@@ -78,6 +81,8 @@ public class HomeActivity extends ActivityGroup {
     	   isBind = false;
        }
 	};
+	
+	
 
     /** Called when the activity is first created. */
     @Override
